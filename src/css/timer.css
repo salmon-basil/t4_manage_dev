@@ -1,71 +1,64 @@
-/* 全体リセット */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 /* 画面中央配置 */
 body {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f5f7fa;
-  font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f7fa;
+    font-family: Arial, sans-serif;
 }
 
 /* タイマー本体 */
 .timer {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  width: 90%;
-  max-width: 400px;
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
 }
 
 /* 時間表示 */
 #time {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-  letter-spacing: 2px;
-  color: #333;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+    color: #333;
 }
 
 /* ボタン共通 */
 button {
-  padding: 0.6rem 1.2rem;
-  margin: 0.3rem;
-  border: none;
-  border-radius: 8px;
-  background-color: #47bafc;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
+    padding: 0.6rem 1.2rem;
+    margin: 0.3rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #47bafc;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 /* ホバー */
 button:hover {
-  transform: scale(1.05);
-  background-color: #2ea3e6;
+    transform: scale(1.05);
+    background-color: #2ea3e6;
 }
 
 /* 押したとき */
 button:active {
-  transform: scale(0.98);
+    transform: scale(0.98);
 }
 
 /* レスポンシブ（スマホ） */
 @media (max-width: 480px) {
-  #time {
-    font-size: 2.2rem;
-  }
+    #time {
+        font-size: 2.2rem;
+    }
 
-  button {
-    width: 100%;
-    margin: 0.4rem 0;
-  }
+    button {
+        width: 100%;
+        margin: 0.4rem 0;
+    }
 }

@@ -1,0 +1,7 @@
+Controllers
+    Modelで定義したオブジェクトを操作する関数
+Model
+    主にオブジェクトのデータ構造を定義する
+View
+    UIを書く
+    HTML, CSS, jsのファイルに分けて管理

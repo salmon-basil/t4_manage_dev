@@ -15,9 +15,6 @@ public class Rank {
     @Column(nullable = false)
     private String rankName;
 
-    // 必要ポイント
-    private int minPoint;
-
     // このランクのユーザー一覧
     @OneToMany(mappedBy = "rank")
     private List<User> users;

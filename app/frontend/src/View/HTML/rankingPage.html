@@ -1,28 +1,62 @@
 <!DOCTYPE html>
-<html lang = "ja">
+<html lang="ja">
     <head>
-        <meta charset = "UFT-8"/>
-
-        <meta name = "viewport" content = "width=device-width, initial-scale=1.0"/>
-
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>ランキング</title>
 
-        <link rel="stylesheet" href="../CSS/base.css"/>
-        <link rel="stylesheet" href="../CSS/ranking.css"/>
+        <link rel="stylesheet" href="../CSS/base.css" />
+        <link rel="stylesheet" href="../CSS/ranking.css" />
     </head>
 
     <body>
-        <div class="ranking">
-            <h1>ランキング</h1>
+        <main class="ranking-page">
+            <section class="ranking-panel">
+                <header class="ranking-header">
+                    <div>
+                        <p class="breadcrumb">ホーム / ランキング</p>
+                        <h1>ランキング</h1>
+                        <p class="subtitle">学習の成果をランキングで確認しましょう。</p>
+                    </div>
+                    <a class="back-button" href="./login.html">戻る</a>
+                </header>
 
-            <table>
-                <tr>
-                    <th>順位</th>
-                    <th>名前</th>
-                    <th>ポイント</th>
-                </tr>
-            </table>
-        </div>
+                <div class="ranking-summary">
+                    <div class="summary-card gold">
+                        <span class="rank-label">1位</span>
+                        <strong>ー</strong>
+                        <small>データなし</small>
+                    </div>
+                    <div class="summary-card silver">
+                        <span class="rank-label">2位</span>
+                        <strong>ー</strong>
+                        <small>データなし</small>
+                    </div>
+                    <div class="summary-card bronze">
+                        <span class="rank-label">3位</span>
+                        <strong>ー</strong>
+                        <small>データなし</small>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>順位</th>
+                                <th>ユーザー名</th>
+                                <th>ポイント</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="empty-row">
+                                <td colspan="3">ランキングデータはまだ登録されていません</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
 
         <script src="../js/loginSystem.js"></script>
     </body>

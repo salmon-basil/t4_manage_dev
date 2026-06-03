@@ -2,28 +2,44 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8" />
-
-        <!-- レスポンシブ対応（必須） -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        <!-- ページタイトル -->
         <title>勉強タイマー</title>
 
-        <!-- CSS読み込み -->
         <link rel="stylesheet" href="../CSS/base.css" />
         <link rel="stylesheet" href="../CSS/timer.css" />
     </head>
 
     <body>
-        <!-- ここにタイマーHTMLを書く -->
-        <div class="timer">
-            <h1 id="time">00:00:00</h1>
-            <button id="start">開始</button>
-            <button id="stop">停止</button>
-            <button id="reset">リセット</button>
+        <div class="content">
+            <div class="info">
+                <div class="clock-widget">
+                    <p id="currentDate" class="clock-date">2026/06/03(水)</p>
+                    <p id="currentTime" class="clock-time">00:00</p>
+                </div>
+                <div class="tag-section">
+                    <h3>勉強内容</h3>
+                    <select id="studyTag">
+                        <option value="">-- 選択してください --</option>
+                        <option value="数学">数学</option>
+                        <option value="英語">英語</option>
+                        <option value="国語">国語</option>
+                        <option value="社会">社会</option>
+                        <option value="理科">理科</option>
+                        <option value="プログラミング">プログラミング</option>
+                        <option value="その他">その他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="timer">
+                <h1 id="time">00:00:00</h1>
+                <button id="start">開始</button>
+                <button id="stop">停止</button>
+                <button id="reset">リセット</button>
+                <button id="send">登録</button>
+            </div>
         </div>
 
-        <!-- JS読み込み（bodyの最後が重要） -->
+        <script src="../../Controllers/Timer.js"></script>
         <script src="../js/timerSystem.js"></script>
     </body>
 </html>

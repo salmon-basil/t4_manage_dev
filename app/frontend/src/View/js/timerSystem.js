@@ -57,6 +57,7 @@ document.getElementById('start').onclick = () => {
         startTime = Date.now(); // 開始時刻を記録
         timerInterval = setInterval(updateTime, 1000); // 1秒ごとに表示更新
         isRunning = true;
+        saveState();
     }
 };
 
@@ -66,6 +67,7 @@ document.getElementById('stop').onclick = () => {
         clearInterval(timerInterval); // タイマーを停止
         elapsedTime += Date.now() - startTime; // 経過時間を累積に追加
         isRunning = false;
+        saveState();
     }
 };
 
@@ -74,6 +76,7 @@ document.getElementById('reset').onclick = () => {
     clearInterval(timerInterval); // タイマーを停止
     elapsedTime = 0; // 累積時間をリセット
     isRunning = false;
+    localStorage.removeItem('timer');
     document.getElementById('time').textContent = '00:00:00'; // 表示をリセット
 };
 
@@ -86,3 +89,36 @@ window.addEventListener('DOMContentLoaded', () => {
     // 毎分、日付と時刻を更新
     setInterval(updateDateTime, 60000);
 });
+
+// ===== タブ切り替え時の自動停止・再開 =====
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        // タブ離脱 → 停止
+        if (isRunning) {
+            clearInterval(timerInterval);
+            elapsedTime += Date.now() - startTime;
+            isRunning = false;
+            saveState();
+        }
+    } else {
+        // タブ復帰 → 再開
+        if (!isRunning && elapsedTime > 0) {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTime, 1000);
+            isRunning = true;
+            saveState();
+        }
+    }
+});
+
+// ===== ローカルストレージ保存 =====
+function saveState() {
+    localStorage.setItem(
+        'timer',
+        JSON.stringify({
+            startTime,
+            elapsedTime,
+            isRunning,
+        })
+    );
+}

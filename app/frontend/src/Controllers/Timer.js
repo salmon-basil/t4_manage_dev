@@ -27,6 +27,10 @@ function sendStudyTime() {
 
     // 学習時間（ミリ秒を分に変換）
     const durationMinutes = Math.floor(elapsedTime / 60000);
+    if (durationMinutes === 0) {
+        alert('勉強時間が１分未満のため登録できません');
+        return;
+    }
 
     // データベースに送信するデータ
     const submitData = {

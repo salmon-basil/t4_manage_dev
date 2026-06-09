@@ -17,6 +17,7 @@
                         <p class="breadcrumb">ホーム / ランキング</p>
                         <h1>ランキング</h1>
                         <p class="subtitle">学習の成果をランキングで確認しましょう。</p>
+                        <p class="user-rank">あなたのランク: <span id="user-rank-value" class="tier-badge">ー</span></p>
                     </div>
                     <a class="back-button" href="./homePage.html">戻る</a>
                 </header>
@@ -24,18 +25,18 @@
                 <div class="ranking-summary">
                     <div class="summary-card gold">
                         <span class="rank-label">1位</span>
-                        <strong>ー</strong>
-                        <small>データなし</small>
+                        <strong class="top-name">ー</strong>
+                        <small class="top-points">データなし</small>
                     </div>
                     <div class="summary-card silver">
                         <span class="rank-label">2位</span>
-                        <strong>ー</strong>
-                        <small>データなし</small>
+                        <strong class="top-name">ー</strong>
+                        <small class="top-points">データなし</small>
                     </div>
                     <div class="summary-card bronze">
                         <span class="rank-label">3位</span>
-                        <strong>ー</strong>
-                        <small>データなし</small>
+                        <strong class="top-name">ー</strong>
+                        <small class="top-points">データなし</small>
                     </div>
                 </div>
 
@@ -48,10 +49,8 @@
                                 <th>ポイント</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="empty-row">
-                                <td colspan="3">ランキングデータはまだ登録されていません</td>
-                            </tr>
+                        <tbody id="ranking-tbody">
+                            <!-- JSで全件を挿入します -->
                         </tbody>
                     </table>
                 </div>
@@ -59,5 +58,6 @@
         </main>
 
         <script src="../js/loginSystem.js"></script>
+        <script src="../js/ranking.js"></script>
     </body>
 </html>

@@ -23,4 +23,6 @@ module.exports = (db) => {
 
         res.json(rankings);
     });
+
+    return router;
 };

@@ -11,17 +11,17 @@ const app = express();
 app.use(cors()); // フロントからのアクセスを許可
 app.use(express.json()); // JSON形式のリクエストを扱えるようにする
 
-// APIの参照
-app.use("/api/user", require("./routes/user"));
-app.use("/api/study", require("./routes/study"));
-app.use("/api/ranking", require("./routes/ranking"));
-
 // ==============================
 // データベース接続
 // ==============================
 
 // data.db ファイルに接続（存在しなければ自動生成）
 const db = new Database(path.join(__dirname, "data.db"));
+
+// APIの参照
+app.use("/api/user", require("./routes/user")(db));
+app.use("/api/study", require("./routes/study")(db));
+app.use("/api/ranking", require("./routes/ranking")(db));
 
 // ==============================
 // データベース初期化（テーブル作成）

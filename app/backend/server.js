@@ -10,6 +10,8 @@ const app = express();
 // ミドルウェア設定
 app.use(cors()); // フロントからのアクセスを許可
 app.use(express.json()); // JSON形式のリクエストを扱えるようにする
+
+=======
 // 公開ディレクトリを静的に提供（/public/<file> で参照可能）
 app.use('/public', express.static(path.join(__dirname, '..', '..', 'public')));
 app.use('/CSS', express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'CSS')));

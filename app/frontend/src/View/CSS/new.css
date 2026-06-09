@@ -1,9 +1,9 @@
 :root {
-  --bg-start: #e9eeff;
-  --bg-end: #dbeafe;
+  --bg-start: #f5f7ff;
+  --bg-end: #e0f2fe;
   --card-bg: #ffffff;
   --text-color: #1f2937;
-  --border-color: #cbd5e1;
+  --border-color: #d1d5db;
   --button-bg: #2563eb;
   --button-hover: #1d4ed8;
 }
@@ -23,47 +23,47 @@ body {
   color: var(--text-color);
 }
 
-.login-page {
+.register-page {
   width: 100%;
-  max-width: 420px;
+  max-width: 480px;
   padding: 24px;
 }
 
-.login-card {
+.register-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 24px;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
-  padding: 40px 32px;
+  border-radius: 28px;
+  box-shadow: 0 22px 54px rgba(15, 23, 42, 0.12);
+  padding: 42px 36px;
 }
 
-.login-header {
+.register-header {
   text-align: center;
   margin-bottom: 28px;
 }
 
-.login-header h1 {
+.register-header h1 {
   margin: 0 0 12px;
   font-size: 2rem;
 }
 
-.login-header p {
+.register-header p {
   margin: 0;
   color: #4b5563;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-.login-form {
+.register-form {
   display: grid;
   gap: 16px;
 }
 
-.login-form label {
+.register-form label {
   font-size: 0.95rem;
   color: #4b5563;
 }
 
-.login-form input {
+.register-form input {
   width: 100%;
   padding: 14px 16px;
   border: 1px solid var(--border-color);
@@ -73,13 +73,13 @@ body {
   color: var(--text-color);
 }
 
-.login-form input:focus {
+.register-form input:focus {
   outline: none;
   border-color: #93c5fd;
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
 }
 
-.login-form button {
+.register-form button {
   width: 100%;
   padding: 14px 16px;
   border: none;
@@ -92,30 +92,29 @@ body {
   transition: background 0.2s ease;
 }
 
-.login-form button:hover {
+.register-form button:hover {
   background: var(--button-hover);
 }
 
-.signup-button {
-  width: 100%;
-  padding: 14px 16px;
-  margin-top: 8px;
-  border: 2px solid #2563eb;
-  border-radius: 12px;
-  background: transparent;
+.login-redirect {
+  margin: 24px 0 0;
+  text-align: center;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.login-redirect a {
   color: #2563eb;
-  font-size: 1rem;
+  text-decoration: none;
   font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
 }
 
-.signup-button:hover {
-  background: rgba(37, 99, 235, 0.08);
+.login-redirect a:hover {
+  text-decoration: underline;
 }
 
-@media (max-width: 480px) {
-  .login-card {
-    padding: 32px 20px;
+@media (max-width: 520px) {
+  .register-card {
+    padding: 32px 22px;
   }
 }

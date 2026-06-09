@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>新規会員登録</title>
+    <link rel="stylesheet" href="../CSS/new.css" />
+</head>
+<body>
+    <div class="register-page">
+        <main class="register-card">
+            <div class="register-header">
+                <h1>新規会員登録</h1>
+                <p>これから始める方はこちらからアカウントを作成してください。</p>
+            </div>
+
+            <form class="register-form">
+                <label for="new-username">ユーザー名</label>
+                <input id="new-username" name="username" type="text" placeholder="ユーザー名を入力" required />
+
+                <label for="new-password">パスワード</label>
+                <input id="new-password" name="password" type="password" placeholder="パスワードを入力" required />
+
+                <label for="confirm-password">パスワード（確認）</label>
+                <input id="confirm-password" name="confirmPassword" type="password" placeholder="もう一度入力" required />
+
+                <button type="submit">登録する</button>
+            </form>
+
+            <p class="login-redirect">すでにアカウントをお持ちの方は <a href="login.html">ログイン</a></p>
+        </main>
+    </div>
+    <script src="../js/authSystem.js"></script>
+</body>
+</html>

@@ -11,6 +11,13 @@ const app = express();
 app.use(cors()); // フロントからのアクセスを許可
 app.use(express.json()); // JSON形式のリクエストを扱えるようにする
 
+=======
+// 公開ディレクトリを静的に提供（/public/<file> で参照可能）
+app.use('/public', express.static(path.join(__dirname, '..', '..', 'public')));
+app.use('/CSS', express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'CSS')));
+app.use('/js', express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'js')));
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'HTML')));
+
 // ==============================
 // データベース接続
 // ==============================
@@ -47,15 +54,16 @@ function initDatabase() {
       FOREIGN KEY (userId) REFERENCES User(id)
     );
 
-    -- ランキングテーブル（※現状は未使用）
+    -- ランキングテーブル
     CREATE TABLE IF NOT EXISTS Rank (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
-      totalMinutes INTEGER DEFAULT 0,
-      rank INTEGER,
+      userId INTEGER NOT NULL,                
+      weeklyMinutes INTEGER DEFAULT 0,        
+      rank INTEGER,                           -- ランク(1-5)
+      league TEXT NOT NULL,                   -- リーグ名（未定義）
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (userId) REFERENCES User(id)
-    );
+);
   `);
 
     console.log("✅ データベーステーブルが作成されました");

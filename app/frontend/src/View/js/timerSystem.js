@@ -2,6 +2,32 @@
 let startTime; // タイマー開始時刻を保存
 let elapsedTime = 0; // 累積経過時間（ミリ秒）
 let timerInterval; // setIntervalのID
+let isRunning = false; // タイマー実行中フラグ
+
+// ===== 日付と時刻を更新する関数 =====
+/**
+ * 現在の日付と時刻をページに表示する
+ */
+function updateDateTime() {
+    const now = new Date();
+
+    // 日付をフォーマット（YYYY/MM/DD(曜日)）
+    const daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const date = String(now.getDate()).padStart(2, '0');
+    const day = daysOfWeek[now.getDay()];
+    const dateString = `${year}/${month}/${date} ${day}`;
+
+    // 時刻をフォーマット（HH:MM）
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}`;
+
+    // DOM要素に表示
+    document.getElementById('currentDate').textContent = dateString;
+    document.getElementById('currentTime').textContent = timeString;
+}
 
 // ===== タイマー表示更新関数 =====
 /**
@@ -27,40 +53,72 @@ function updateTime() {
 
 // ===== スタートボタンのイベントハンドラー =====
 document.getElementById('start').onclick = () => {
-    startTime = Date.now(); // 開始時刻を記録
-    timerInterval = setInterval(updateTime, 1000); // 1秒ごとに表示更新
+    if (!isRunning) {
+        startTime = Date.now(); // 開始時刻を記録
+        timerInterval = setInterval(updateTime, 1000); // 1秒ごとに表示更新
+        isRunning = true;
+        saveState();
+    }
 };
 
 // ===== ストップボタンのイベントハンドラー =====
 document.getElementById('stop').onclick = () => {
-    clearInterval(timerInterval); // タイマーを停止
-    elapsedTime += Date.now() - startTime; // 経過時間を累積に追加
+    if (isRunning) {
+        clearInterval(timerInterval); // タイマーを停止
+        elapsedTime += Date.now() - startTime; // 経過時間を累積に追加
+        isRunning = false;
+        saveState();
+    }
 };
 
 // ===== リセットボタンのイベントハンドラー =====
 document.getElementById('reset').onclick = () => {
     clearInterval(timerInterval); // タイマーを停止
     elapsedTime = 0; // 累積時間をリセット
+    isRunning = false;
+    localStorage.removeItem('timer');
     document.getElementById('time').textContent = '00:00:00'; // 表示をリセット
 };
 
-// ===== 学習時間送信関数 =====
-/**
- * 累積された学習時間をサーバーに送信する
- * 経過時間をミリ秒から分に変換してPOST
- */
-function sendStudyTime() {
-    // ミリ秒を分に変換
-    const minutes = Math.floor(elapsedTime / 60000);
+// ===== 登録ボタンのイベントハンドラー =====
+document.getElementById('send').onclick = sendStudyTime;
 
-    // サーバーのAPIエンドポイントに学習時間を送信
-    fetch('/api/study-log', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            study_time: minutes,
-        }),
-    });
+// ===== 初期化：ページ読み込み時に日付時刻を表示 =====
+window.addEventListener('DOMContentLoaded', () => {
+    updateDateTime();
+    // 毎分、日付と時刻を更新
+    setInterval(updateDateTime, 60000);
+});
+
+// ===== タブ切り替え時の自動停止・再開 =====
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        // タブ離脱 → 停止
+        if (isRunning) {
+            clearInterval(timerInterval);
+            elapsedTime += Date.now() - startTime;
+            isRunning = false;
+            saveState();
+        }
+    } else {
+        // タブ復帰 → 再開
+        if (!isRunning && elapsedTime > 0) {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTime, 1000);
+            isRunning = true;
+            saveState();
+        }
+    }
+});
+
+// ===== ローカルストレージ保存 =====
+function saveState() {
+    localStorage.setItem(
+        'timer',
+        JSON.stringify({
+            startTime,
+            elapsedTime,
+            isRunning,
+        })
+    );
 }

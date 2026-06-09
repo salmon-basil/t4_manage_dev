@@ -10,11 +10,11 @@ const app = express();
 // ミドルウェア設定
 app.use(cors()); // フロントからのアクセスを許可
 app.use(express.json()); // JSON形式のリクエストを扱えるようにする
-
-// APIの参照
-app.use("/api/user", require("./routes/user"));
-app.use("/api/study", require("./routes/study"));
-app.use("/api/ranking", require("./routes/ranking"));
+// 公開ディレクトリを静的に提供（/public/<file> で参照可能）
+app.use('/public', express.static(path.join(__dirname, '..', '..', 'public')));
+app.use('/CSS', express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'CSS')));
+app.use('/js', express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'js')));
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'src', 'View', 'HTML')));
 
 // ==============================
 // データベース接続
@@ -22,6 +22,11 @@ app.use("/api/ranking", require("./routes/ranking"));
 
 // data.db ファイルに接続（存在しなければ自動生成）
 const db = new Database(path.join(__dirname, "data.db"));
+
+// APIの参照
+app.use("/api/user", require("./routes/user")(db));
+app.use("/api/study", require("./routes/study")(db));
+app.use("/api/ranking", require("./routes/ranking")(db));
 
 // ==============================
 // データベース初期化（テーブル作成）
@@ -47,15 +52,16 @@ function initDatabase() {
       FOREIGN KEY (userId) REFERENCES User(id)
     );
 
-    -- ランキングテーブル（※現状は未使用）
+    -- ランキングテーブル
     CREATE TABLE IF NOT EXISTS Rank (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
-      totalMinutes INTEGER DEFAULT 0,
-      rank INTEGER,
+      userId INTEGER NOT NULL,                
+      weeklyMinutes INTEGER DEFAULT 0,        
+      rank INTEGER,                           -- ランク(1-5)
+      league TEXT NOT NULL,                   -- リーグ名（未定義）
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (userId) REFERENCES User(id)
-    );
+);
   `);
 
     console.log("✅ データベーステーブルが作成されました");

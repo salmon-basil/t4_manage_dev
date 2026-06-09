@@ -1,12 +1,12 @@
 // Timer.js
-// タイマー機能のコントローラー（仮実装）
+// タイマー機能のコントローラー
 //担当　深谷
 
 class TimerController {
     constructor() {
-        this.startTime = null;//開始時刻
+        this.startTime = null;
         this.elapsed = 0;//経過時間
-        this.timerId = null;//タイマーのid
+        this.timerId = null;
     }
 
     start() {
@@ -37,5 +37,4 @@ class TimerController {
     }
 }
 
-// 仮のエクスポート
 export default TimerController;

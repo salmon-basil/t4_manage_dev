@@ -34,6 +34,25 @@ body {
   align-items: flex-start;
   gap: 24px;
   margin-bottom: 28px;
+  position: relative;
+}
+
+.rank-update-countdown {
+  position: absolute;
+  top: 180px;
+  right: 24px;
+  background: #f0f4f8;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  color: #334155;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#countdown-text {
+  margin: 0;
 }
 
 .breadcrumb {
@@ -141,22 +160,47 @@ body {
 }
 
 /* あなたのランク表示 */
+.user-rank-panel {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 10px auto 0;
+  width: 100%;
+  max-width: 760px;
+}
+
 .user-rank {
-  margin-top: 10px;
-  font-size: 0.98rem;
-  color: #475569;
+  font-size: 1.05rem;
+  color: #334155;
+  font-weight: 700;
+}
+
+.user-rank-top-img {
+  width: 180px;
+  height: auto;
+  border-radius: 8px;
+  top: -20px;
+  right: 400px;
+  position: absolute;
 }
 
 #user-rank-value {
-  display: inline-block;
-  margin-left: 8px;
-  font-size: 1.6rem;
-  font-weight: 800;
-  padding: 6px 12px;
-  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  font-size: 2rem;
+  font-weight: 900;
+  padding: 12px 20px;
+  border-radius: 20px;
   background: #e6eef9;
   color: #0f172a;
 }
+
+
 
 /* 上位3位の色付け */
 #user-rank-value.rank-1 {
@@ -184,6 +228,24 @@ body {
   text-transform: uppercase;
 }
 
+/* バッジ画像とテキスト */
+.tier-img {
+  width: 56px;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 8px;
+  margin-right: 10px;
+}
+
+.tier-label {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
 .tier-bronze {
   background: linear-gradient(180deg, #f1c29a 0%, #d97706 100%);
   color: #3b1700;
@@ -208,6 +270,8 @@ body {
   background: linear-gradient(180deg, #c7f9ff 0%, #0ea5e9 100%);
   color: #022c44;
 }
+
+.status-cell { }
 
 .ranking-table tbody tr.top-zone {
   background: rgba(59, 130, 246, 0.08);

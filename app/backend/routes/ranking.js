@@ -6,21 +6,46 @@ const express = require("express");
 const router = express.Router();
 
 module.exports = (db) => {
-    router.post("/", (req, res) => {
-        // ユーザーごとの合計学習時間を集計
-        const select = db.prepare(`
-        SELECT 
-            u.id,
-            u.username,
-            SUM(sr.studyMinutes) as totalMinutes
-        FROM User u
-        LEFT JOIN StudyRecord sr ON u.id = sr.userId
-        GROUP BY u.id
-        ORDER BY totalMinutes DESC
-    `);
+    router.get("/", (req, res) => {
+        // Rank テーブルの weeklyMinutes でソート
+        const rankParam = parseInt(req.query.rank, 10);
+        let select;
+
+        if (!Number.isNaN(rankParam)) {
+            select = db.prepare(`
+                SELECT
+                    r.id,
+                    u.id AS userId,
+                    u.username,
+                    r.weeklyMinutes,
+                    r.rank,
+                    r.league
+                FROM Rank r
+                JOIN User u ON u.id = r.userId
+                WHERE r.rank = ?
+                ORDER BY r.weeklyMinutes DESC
+            `);
+            const rankings = select.all(rankParam);
+            return res.json(rankings);
+        }
+
+        select = db.prepare(`
+            SELECT
+                r.id,
+                u.id AS userId,
+                u.username,
+                r.weeklyMinutes,
+                r.rank,
+                r.league
+            FROM Rank r
+            JOIN User u ON u.id = r.userId
+            ORDER BY r.weeklyMinutes DESC
+        `);
 
         const rankings = select.all();
 
         res.json(rankings);
     });
+
+    return router;
 };

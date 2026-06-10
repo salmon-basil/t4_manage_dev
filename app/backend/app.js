@@ -11,9 +11,10 @@ const db = new Database("app.db");
 const userRepository = require("./repositories/userRepository")(db);
 const rankingRepository = require("./repositories/rankingRepository")(db);
 const studyRepository = require("./repositories/studyRepository")(db);
+const profileRepository = require("./repositories/profileRepository")(db);
 
 // Service
-const userService = require("./services/userService")(userRepository);
+const userService = require("./services/userService")(userRepository, db);
 const rankingService = require("./services/rankingService")(rankingRepository);
 
 // Routes（依存注入）
@@ -33,6 +34,10 @@ app.use("/api/study-records", studyRoutes);
 // // ユーザーテーブル確認用
 // const users = db.prepare("SELECT * FROM User").all();
 // console.log(users);
+
+// // ユーザーテーブル確認用
+// const profiles = db.prepare("SELECT * FROM Profile").all();
+// console.log(profiles);
 
 // 起動
 app.listen(3000, () => {

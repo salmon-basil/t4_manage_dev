@@ -1,50 +1,19 @@
-/**
- * ランキング取得API
- * GET /api/rankings
- */
+// routes/ranking.js
 const express = require("express");
-const router = express.Router();
 
-module.exports = (db) => {
+module.exports = (rankingService) => {
+    const router = express.Router();
+
     router.get("/", (req, res) => {
-        // Rank テーブルの weeklyMinutes でソート
-        const rankParam = parseInt(req.query.rank, 10);
-        let select;
-
-        if (!Number.isNaN(rankParam)) {
-            select = db.prepare(`
-                SELECT
-                    r.id,
-                    u.id AS userId,
-                    u.username,
-                    r.weeklyMinutes,
-                    r.rank,
-                    r.league
-                FROM Rank r
-                JOIN User u ON u.id = r.userId
-                WHERE r.rank = ?
-                ORDER BY r.weeklyMinutes DESC
-            `);
-            const rankings = select.all(rankParam);
-            return res.json(rankings);
+        try {
+            const rank = req.query.rank
+                ? parseInt(req.query.rank, 10)
+                : undefined;
+            const data = rankingService.getRankings(rank);
+            res.json(data);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
         }
-
-        select = db.prepare(`
-            SELECT
-                r.id,
-                u.id AS userId,
-                u.username,
-                r.weeklyMinutes,
-                r.rank,
-                r.league
-            FROM Rank r
-            JOIN User u ON u.id = r.userId
-            ORDER BY r.weeklyMinutes DESC
-        `);
-
-        const rankings = select.all();
-
-        res.json(rankings);
     });
 
     return router;

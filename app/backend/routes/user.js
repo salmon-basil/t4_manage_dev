@@ -6,8 +6,12 @@ module.exports = (userService) => {
 
     router.post("/", async (req, res) => {
         try {
-            const { username, password } = req.body;
-            const user = await userService.register(username, password);
+            const { username, password, displayName } = req.body;
+            const user = await userService.register(
+                username,
+                password,
+                displayName,
+            );
             res.json(user);
         } catch (err) {
             res.status(400).json({ error: err.message });

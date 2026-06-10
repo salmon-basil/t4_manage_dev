@@ -1,4 +1,3 @@
-// services/userService.js
 const bcrypt = require("bcrypt");
 
 module.exports = (userRepository) => {
@@ -14,7 +13,13 @@ module.exports = (userRepository) => {
             }
 
             const hashed = await bcrypt.hash(password, 10);
-            return userRepository.createUser(username, hashed);
+
+            const user = userRepository.createUser(username, hashed);
+
+            return {
+                id: user.lastInsertRowid,
+                username,
+            };
         },
 
         login: async (username, password) => {
@@ -32,7 +37,10 @@ module.exports = (userRepository) => {
                 throw new Error("認証失敗");
             }
 
-            return { id: user.id, username: user.username };
+            return {
+                id: user.id,
+                username: user.username,
+            };
         },
     };
 };

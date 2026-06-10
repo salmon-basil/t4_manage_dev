@@ -1,21 +1,18 @@
-/**
- * 学習記録追加API
- * POST /api/study-records
- * body: { userId, studyDate, studyMinutes }
- */
+// routes/study.js
 const express = require("express");
-const router = express.Router();
 
-module.exports = (db) => {
+module.exports = (studyRepository) => {
+    const router = express.Router();
+
     router.post("/", (req, res) => {
-        const { userId, studyDate, studyMinutes } = req.body;
-
         try {
-            const insert = db.prepare(
-                "INSERT INTO StudyRecord (userId, studyDate, studyMinutes) VALUES (?, ?, ?)",
-            );
+            const { userId, studyDate, studyMinutes } = req.body;
 
-            insert.run(userId, studyDate, studyMinutes);
+            if (!userId || !studyDate || typeof studyMinutes !== "number") {
+                return res.status(400).json({ error: "不正な入力です。" });
+            }
+
+            studyRepository.createStudyRecord(userId, studyDate, studyMinutes);
 
             res.json({ success: true });
         } catch (err) {

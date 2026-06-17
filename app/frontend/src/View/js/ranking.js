@@ -38,43 +38,13 @@
 
         let data = [];
         try {
-            const res = await fetch('/api/ranking');
+            const url = currentUserId ? `/api/rankings?userId=${encodeURIComponent(currentUserId)}` : '/api/rankings';
+            const res = await fetch(url);
             if (!res.ok) throw new Error('no api');
             data = await res.json();
         } catch (e) {
-            // フォールバックのダミーデータ（API未実装時）
-            data = [
-                { id: 'u1', username: 'alice', weeklyMinutes: 3000, league: 'DIAMOND' },
-                { id: 'u2', username: 'bob', weeklyMinutes: 2850, league: 'DIAMOND' },
-                { id: 'u3', username: 'charlie', weeklyMinutes: 2700, league: 'DIAMOND' },
-                { id: 'u4', username: 'david', weeklyMinutes: 2600, league: 'DIAMOND' },
-                { id: 'u5', username: 'emma', weeklyMinutes: 2500, league: 'DIAMOND' },
-                { id: 'u6', username: 'fumi', weeklyMinutes: 2400, league: 'DIAMOND' },
-                { id: 'u7', username: 'george', weeklyMinutes: 2300, league: 'PLATINUM' },
-                { id: 'u8', username: 'hana', weeklyMinutes: 2200, league: 'PLATINUM' },
-                { id: 'u9', username: 'ikuto', weeklyMinutes: 2100, league: 'PLATINUM' },
-                { id: 'u10', username: 'julia', weeklyMinutes: 2000, league: 'PLATINUM' },
-                { id: 'u11', username: 'kaito', weeklyMinutes: 1900, league: 'PLATINUM' },
-                { id: 'u12', username: 'lina', weeklyMinutes: 1800, league: 'PLATINUM' },
-                { id: 'u13', username: 'mika', weeklyMinutes: 1700, league: 'GOLD' },
-                { id: 'u14', username: 'naoki', weeklyMinutes: 1600, league: 'GOLD' },
-                { id: 'u15', username: 'ohana', weeklyMinutes: 1500, league: 'GOLD' },
-                { id: 'u16', username: 'peter', weeklyMinutes: 1400, league: 'GOLD' },
-                { id: 'u17', username: 'rina', weeklyMinutes: 1300, league: 'GOLD' },
-                { id: 'u18', username: 'shun', weeklyMinutes: 1200, league: 'GOLD' },
-                { id: 'u19', username: 'taku', weeklyMinutes: 1100, league: 'SILVER' },
-                { id: 'u20', username: 'umi', weeklyMinutes: 1000, league: 'SILVER' },
-                { id: 'u21', username: 'yuki', weeklyMinutes: 950, league: 'SILVER' },
-                { id: 'u22', username: 'zara', weeklyMinutes: 900, league: 'SILVER' },
-                { id: 'u23', username: 'aki', weeklyMinutes: 850, league: 'SILVER' },
-                { id: 'u24', username: 'bari', weeklyMinutes: 800, league: 'SILVER' },
-                { id: 'u25', username: 'chika', weeklyMinutes: 750, league: 'BRONZE' },
-                { id: 'u26', username: 'dori', weeklyMinutes: 700, league: 'BRONZE' },
-                { id: 'u27', username: 'eri', weeklyMinutes: 650, league: 'BRONZE' },
-                { id: 'u28', username: 'fumiya', weeklyMinutes: 600, league: 'BRONZE' },
-                { id: 'u29', username: 'goro', weeklyMinutes: 550, league: 'BRONZE' },
-                { id: 'u30', username: 'hanao', weeklyMinutes: 500, league: 'BRONZE' }
-            ];
+            console.error('ランキング取得に失敗しました。app.db から取得できるようにサーバーを確認してください。', e);
+            data = [];
         }
 
         // weeklyMinutesで降順ソート

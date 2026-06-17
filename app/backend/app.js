@@ -6,6 +6,7 @@ const app = express();
 
 // DB
 const db = new Database("app.db");
+require("./db/init");
 
 // Repository
 const userRepository = require("./repositories/userRepository")(db);

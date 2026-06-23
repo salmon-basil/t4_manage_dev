@@ -14,7 +14,8 @@ module.exports = (rankingService) => {
             }
 
             const rank = req.query.rank ? parseInt(req.query.rank, 10) : undefined;
-            const data = rankingService.getRankings(rank);
+            const league = typeof req.query.league === "string" ? req.query.league : undefined;
+            const data = rankingService.getRankings(rank, league);
             res.json(data);
         } catch (err) {
             res.status(500).json({ error: err.message });

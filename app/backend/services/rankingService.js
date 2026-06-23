@@ -1,7 +1,10 @@
 // services/rankingService.js
 module.exports = (rankingRepository) => {
     return {
-        getRankings: (rank) => {
+        getRankings: (rank, league) => {
+            if (rank !== undefined && league !== undefined) {
+                return rankingRepository.getRankingsByLeagueAndRank(league, rank);
+            }
             if (rank !== undefined) {
                 return rankingRepository.getRankingsByRank(rank);
             }

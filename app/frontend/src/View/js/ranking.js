@@ -1,5 +1,6 @@
 (() => {
     document.addEventListener('DOMContentLoaded', init);
+    const RANKING_API_BASE = 'http://localhost:3000/api/rankings';
 
     async function init() {
         const tbody = document.getElementById('ranking-tbody');
@@ -7,7 +8,12 @@
         const countdownEl = document.getElementById('countdown-text');
         const topClasses = ['gold', 'silver', 'bronze'];
 
-        let currentUserId = (window.currentUser && window.currentUser.id) || localStorage.getItem('currentUserId') || null;
+        const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+        const currentUserId =
+            (window.currentUser && window.currentUser.id) ||
+            (storedUser && storedUser.id) ||
+            localStorage.getItem('currentUserId') ||
+            null;
 
         // 月曜0:00までのカウントダウンを表示
         function updateCountdown() {
@@ -38,10 +44,19 @@
 
         let data = [];
         try {
-            const url = currentUserId ? `/api/rankings?userId=${encodeURIComponent(currentUserId)}` : '/api/rankings';
+            const url = `${RANKING_API_BASE}?league=else&rank=1`;
             const res = await fetch(url);
             if (!res.ok) throw new Error('no api');
             data = await res.json();
+
+            if (!Array.isArray(data) || data.length === 0) {
+                const fallbackRes = await fetch(RANKING_API_BASE);
+                if (!fallbackRes.ok) throw new Error('no fallback api');
+                const fallbackData = await fallbackRes.json();
+                data = Array.isArray(fallbackData)
+                    ? fallbackData.filter((item) => item.rank === 1 || item.league === 'else')
+                    : [];
+            }
         } catch (e) {
             console.error('ランキング取得に失敗しました。app.db から取得できるようにサーバーを確認してください。', e);
             data = [];
@@ -97,10 +112,10 @@
                 tr.appendChild(pointsTd);
 
                 // 現在ユーザーの行をハイライト
-                if (currentUserId && (item.id === currentUserId || item.userId === currentUserId)) {
+                if (currentUserId && Number(item.userId) === Number(currentUserId)) {
                     tr.classList.add('highlight-row');
                     foundRank = idx + 1;
-                    userTier = item.league || item.rank || item.tier || 'GOLD';
+                    userTier = item.league || item.rank || item.tier || 'else';
                 }
 
                 tbody.appendChild(tr);
@@ -108,10 +123,8 @@
 
             // `あなたのランク` 表示を更新（画像は使わずテキストで表示）
             ['tier-bronze', 'tier-silver', 'tier-gold', 'tier-platinum', 'tier-diamond'].forEach(c => userRankEl.classList.remove(c));
-            const displayTier = (foundRank && userTier) ? userTier : 'GOLD';
-            const tierKey = displayTier.toLowerCase();
-            userRankEl.textContent = displayTier;
-            userRankEl.classList.add(`tier-${tierKey}`);
+            userRankEl.textContent = 'BRONZE';
+            userRankEl.classList.add('tier-bronze');
         }
     }
 })();

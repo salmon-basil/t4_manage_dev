@@ -14,10 +14,10 @@ module.exports = (userRepository) => {
 
             const hashed = await bcrypt.hash(password, 10);
 
-            const user = userRepository.createUser(username, hashed);
+            const user = userRepository.createUserWithInitialRank(username, hashed);
 
             return {
-                id: user.lastInsertRowid,
+                id: user.id,
                 username,
             };
         },

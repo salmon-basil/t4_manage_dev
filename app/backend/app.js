@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const Database = require("better-sqlite3");
+const path = require("path");
 
 const app = express();
 
@@ -26,6 +27,7 @@ const studyRoutes = require("./routes/study")(studyRepository);
 // ミドルウェア
 app.use(cors());
 app.use(express.json());
+app.use("/public", express.static(path.join(__dirname, "..", "..", "public")));
 
 // ルーティング
 app.use("/api/users", userRoutes);

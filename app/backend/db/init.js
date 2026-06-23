@@ -18,11 +18,27 @@ CREATE TABLE IF NOT EXISTS Profile (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userId INTEGER NOT NULL UNIQUE,
     displayName TEXT NOT NULL CHECK(length(displayName) <= 30),
+    nickname TEXT DEFAULT '',
+    goal TEXT DEFAULT '',
     createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(userId) REFERENCES User(id) ON DELETE CASCADE
 );
 `);
+
+const ensureProfileColumns = () => {
+    const columns = db.prepare("PRAGMA table_info('Profile')").all().map((column) => column.name);
+
+    if (!columns.includes("nickname")) {
+        db.exec("ALTER TABLE Profile ADD COLUMN nickname TEXT DEFAULT ''");
+    }
+
+    if (!columns.includes("goal")) {
+        db.exec("ALTER TABLE Profile ADD COLUMN goal TEXT DEFAULT ''");
+    }
+};
+
+ensureProfileColumns();
 
 db.exec(`
 CREATE TRIGGER IF NOT EXISTS trigger_profile_updatedAt

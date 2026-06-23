@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>プロフィール編集</title>
+
+        <link rel="stylesheet" href="../CSS/base.css" />
+        <link rel="stylesheet" href="../CSS/profile.css" />
+    </head>
+
+    <body>
+        <div class="profile edit-page">
+            <h1>プロフィール編集</h1>
+
+            <form id="profile-edit-form" class="edit-form">
+                <div class="info-box">
+                    <label class="title" for="edit-username">ユーザー名</label>
+                    <p id="edit-username" class="readonly-value">未設定</p>
+                </div>
+
+                <div class="info-box">
+                    <label class="title" for="edit-nickname">ニックネーム</label>
+                    <input id="edit-nickname" name="nickname" type="text" placeholder="ニックネームを入力" />
+                </div>
+
+                <div class="info-box">
+                    <label class="title" for="edit-goal">目標</label>
+                    <input id="edit-goal" name="goal" type="text" placeholder="目標を入力" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-button">保存する</button>
+                    <a class="back-button secondary" href="./profilePage.html">キャンセル</a>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            const form = document.getElementById('profile-edit-form');
+            const API_BASE = 'http://localhost:3000/api';
+
+            const loadProfileData = async () => {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user || !user.id) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/profile/${user.id}`);
+                    if (!response.ok) {
+                        throw new Error('プロフィールの取得に失敗しました');
+                    }
+
+                    const profile = await response.json();
+                    document.getElementById('edit-username').textContent = profile.username || user.username || '未設定';
+                    document.getElementById('edit-nickname').value = profile.nickname || '';
+                    document.getElementById('edit-goal').value = profile.goal || '';
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('edit-username').textContent = user.username || '未設定';
+                }
+            };
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user || !user.id) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/profile/${user.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            nickname: document.getElementById('edit-nickname').value.trim(),
+                            goal: document.getElementById('edit-goal').value.trim(),
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('プロフィールの更新に失敗しました');
+                    }
+
+                    window.location.href = './profilePage.html';
+                } catch (error) {
+                    console.error(error);
+                    window.alert(error.message);
+                }
+            });
+
+            window.addEventListener('DOMContentLoaded', loadProfileData);
+        </script>
+    </body>
+</html>

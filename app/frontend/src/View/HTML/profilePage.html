@@ -15,22 +15,23 @@
         <div class="profile">
 
             <h1>プロフィール</h1>
+            <a class="edit-button" href="./profileedit.html">プロフィールを編集</a>
             <div class="profile-container">
                 <div class="profile-info">
 
                     <div class="info-box">
                         <p class="title">ユーザー名</p>
-                        <p class="value">ー</p>
+                        <p id="profile-username" class="value">ー</p>
                     </div>
 
                     <div class="info-box">
                         <p class="title">ニックネーム</p>
-                        <p class="value">ー</p>
+                        <p id="profile-nickname" class="value">ー</p>
                     </div>
 
                     <div class="info-box">
                         <p class="title">目標</p>
-                        <p class="value">ー</p>
+                        <p id="profile-goal" class="value">ー</p>
                     </div>
 
                     <div class="info-box">
@@ -63,6 +64,30 @@
         <script>
             const API_BASE = 'http://localhost:3000/api';
 
+            const loadProfileData = async () => {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user || !user.id) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/profile/${user.id}`);
+                    if (!response.ok) {
+                        throw new Error('プロフィールの取得に失敗しました');
+                    }
+
+                    const profile = await response.json();
+                    document.getElementById('profile-username').textContent = profile.username || 'ー';
+                    document.getElementById('profile-nickname').textContent = profile.nickname || 'ー';
+                    document.getElementById('profile-goal').textContent = profile.goal || 'ー';
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('profile-username').textContent = user.username || 'ー';
+                    document.getElementById('profile-nickname').textContent = 'ー';
+                    document.getElementById('profile-goal').textContent = 'ー';
+                }
+            };
+
             const loadStudyHistory = async () => {
                 try {
                     const user = JSON.parse(localStorage.getItem('user'));
@@ -92,7 +117,10 @@
                 }
             };
 
-            window.addEventListener('DOMContentLoaded', loadStudyHistory);
+            window.addEventListener('DOMContentLoaded', () => {
+                loadProfileData();
+                loadStudyHistory();
+            });
         </script>
     </body>
 </html>

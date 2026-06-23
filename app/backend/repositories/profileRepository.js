@@ -1,23 +1,26 @@
 module.exports = (db) => {
     return {
-        upsertProfile: (userId, displayName) => {
+        upsertProfile: (userId, nickname, goal, displayName) => {
             return db
                 .prepare(
                     `
-                    INSERT INTO profiles (user_id, display_name)
-                    VALUES (?, ?)
-                    ON CONFLICT(user_id)
-                    DO UPDATE SET display_name = excluded.display_name
+                    INSERT INTO Profile (userId, displayName, nickname, goal)
+                    VALUES (?, ?, ?, ?)
+                    ON CONFLICT(userId)
+                    DO UPDATE SET
+                        displayName = excluded.displayName,
+                        nickname = excluded.nickname,
+                        goal = excluded.goal
                 `,
                 )
-                .run(userId, displayName);
+                .run(userId, displayName, nickname, goal);
         },
 
         findByUserId: (userId) => {
             return db
                 .prepare(
                     `
-                    SELECT * FROM profiles WHERE user_id = ?
+                    SELECT * FROM Profile WHERE userId = ?
                 `,
                 )
                 .get(userId);

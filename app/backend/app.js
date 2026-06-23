@@ -17,11 +17,13 @@ const profileRepository = require("./repositories/profileRepository")(db);
 // Service
 const userService = require("./services/userService")(userRepository, db);
 const rankingService = require("./services/rankingService")(rankingRepository);
+const profileService = require("./services/profileService")(profileRepository, userRepository);
 
 // Routes（依存注入）
 const userRoutes = require("./routes/user")(userService);
 const rankingRoutes = require("./routes/ranking")(rankingService);
 const studyRoutes = require("./routes/study")(studyRepository);
+const profileRoutes = require("./routes/profile")(profileService);
 
 // ミドルウェア
 app.use(cors());
@@ -31,6 +33,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/rankings", rankingRoutes);
 app.use("/api/study-records", studyRoutes);
+app.use("/api/profile", profileRoutes);
 
 // // ユーザーテーブル確認用
 // const users = db.prepare("SELECT * FROM User").all();

@@ -37,8 +37,17 @@ app.use("/api/study-records", studyRoutes);
 // console.log(users);
 
 // // ユーザーテーブル確認用
-// const profiles = db.prepare("SELECT * FROM Profile").all();
+// const StudyRecord = db.prepare("SELECT * FROM Profile").all();
 // console.log(profiles);
+
+// const tables = db
+//     .prepare("SELECT name FROM sqlite_master WHERE type='table'")
+//     .all();
+// console.log(tables);
+
+
+const rows = db.prepare("SELECT * FROM StudyRecord").all();
+console.log("after insert:", rows);
 
 // 起動
 app.listen(3000, () => {

@@ -11,11 +11,13 @@ module.exports = (db) => {
 
         getStudyHistory: (userId) => {
             return db
-                .prepare(`
+                .prepare(
+                    `
                     SELECT studyDate, studyMinutes FROM StudyRecord
                     WHERE userId = ?
                     ORDER BY studyDate DESC
-                `)
+                `,
+                )
                 .all(userId);
         },
     };

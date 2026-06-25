@@ -17,7 +17,11 @@ module.exports = (profileService) => {
         try {
             const { userId } = req.params;
             const { nickname, goal } = req.body;
-            const profile = profileService.updateProfile(userId, nickname, goal);
+            const profile = profileService.updateProfile(
+                userId,
+                nickname,
+                goal,
+            );
             res.json(profile);
         } catch (err) {
             res.status(400).json({ error: err.message });

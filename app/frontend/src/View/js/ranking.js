@@ -19,26 +19,26 @@
         function updateCountdown() {
             const now = new Date();
             const currentDay = now.getDay(); // 0 = 日曜, 1 = 月曜, ...
-            
+
             let nextMonday = new Date(now);
             nextMonday.setHours(0, 0, 0, 0);
-            
+
             // 月曜日まで何日か計算
             const daysUntilMonday = (1 - currentDay + 7) % 7 || 7;
             nextMonday.setDate(nextMonday.getDate() + daysUntilMonday);
-            
+
             const diff = nextMonday - now;
             if (diff <= 0) {
                 countdownEl.textContent = 'ランク更新: 0日0時間';
                 return;
             }
-            
+
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            
+
             countdownEl.textContent = `ランク更新まで: ${days}日${hours}時間`;
         }
-        
+
         updateCountdown();
         setInterval(updateCountdown, 60000); // 1分ごとに更新
 
@@ -58,12 +58,17 @@
                     : [];
             }
         } catch (e) {
-            console.error('ランキング取得に失敗しました。app.db から取得できるようにサーバーを確認してください。', e);
+            console.error(
+                'ランキング取得に失敗しました。app.db から取得できるようにサーバーを確認してください。',
+                e
+            );
             data = [];
         }
 
         // weeklyMinutesで降順ソート
-        data.sort((a, b) => (b.weeklyMinutes || b.points || 0) - (a.weeklyMinutes || a.points || 0));
+        data.sort(
+            (a, b) => (b.weeklyMinutes || b.points || 0) - (a.weeklyMinutes || a.points || 0)
+        );
 
         // 上位3名を要約カードへ表示
         for (let i = 0; i < 3; i++) {
@@ -95,7 +100,7 @@
             data.forEach((item, idx) => {
                 const tr = document.createElement('tr');
                 const rankTd = document.createElement('td');
-                rankTd.textContent = (idx + 1) + '位';
+                rankTd.textContent = idx + 1 + '位';
                 const nameTd = document.createElement('td');
                 nameTd.textContent = item.username;
                 const pointsTd = document.createElement('td');
@@ -122,7 +127,9 @@
             });
 
             // `あなたのランク` 表示を更新（画像は使わずテキストで表示）
-            ['tier-bronze', 'tier-silver', 'tier-gold', 'tier-platinum', 'tier-diamond'].forEach(c => userRankEl.classList.remove(c));
+            ['tier-bronze', 'tier-silver', 'tier-gold', 'tier-platinum', 'tier-diamond'].forEach(
+                (c) => userRankEl.classList.remove(c)
+            );
             userRankEl.textContent = 'BRONZE';
             userRankEl.classList.add('tier-bronze');
         }

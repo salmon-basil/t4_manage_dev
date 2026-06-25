@@ -22,7 +22,12 @@ module.exports = (profileRepository, userRepository) => {
             throw new Error("ユーザーが見つかりません。");
         }
 
-        profileRepository.upsertProfile(userId, nickname || "", goal || "", user.username);
+        profileRepository.upsertProfile(
+            userId,
+            nickname || "",
+            goal || "",
+            user.username,
+        );
 
         return getProfile(userId);
     };

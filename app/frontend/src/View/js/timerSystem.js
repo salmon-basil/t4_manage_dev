@@ -122,3 +122,8 @@ function saveState() {
         })
     );
 }
+
+function debugSend() {
+    elapsedTime = 60000; // 強制1分
+    sendStudyTime();
+}

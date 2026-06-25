@@ -22,7 +22,12 @@
 
                 <div class="info-box">
                     <label class="title" for="edit-nickname">ニックネーム</label>
-                    <input id="edit-nickname" name="nickname" type="text" placeholder="ニックネームを入力" />
+                    <input
+                        id="edit-nickname"
+                        name="nickname"
+                        type="text"
+                        placeholder="ニックネームを入力"
+                    />
                 </div>
 
                 <div class="info-box">
@@ -54,12 +59,14 @@
                     }
 
                     const profile = await response.json();
-                    document.getElementById('edit-username').textContent = profile.username || user.username || '未設定';
+                    document.getElementById('edit-username').textContent =
+                        profile.username || user.username || '未設定';
                     document.getElementById('edit-nickname').value = profile.nickname || '';
                     document.getElementById('edit-goal').value = profile.goal || '';
                 } catch (error) {
                     console.error(error);
-                    document.getElementById('edit-username').textContent = user.username || '未設定';
+                    document.getElementById('edit-username').textContent =
+                        user.username || '未設定';
                 }
             };
 

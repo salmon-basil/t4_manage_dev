@@ -18,7 +18,10 @@ const profileRepository = require("./repositories/profileRepository")(db);
 // Service
 const userService = require("./services/userService")(userRepository, db);
 const rankingService = require("./services/rankingService")(rankingRepository);
-const profileService = require("./services/profileService")(profileRepository, userRepository);
+const profileService = require("./services/profileService")(
+    profileRepository,
+    userRepository,
+);
 
 // Routes（依存注入）
 const userRoutes = require("./routes/user")(userService);
@@ -41,9 +44,13 @@ app.use("/api/profile", profileRoutes);
 // const users = db.prepare("SELECT * FROM User").all();
 // console.log(users);
 
-// // ユーザーテーブル確認用
+// // プロフィール確認用
 // const profiles = db.prepare("SELECT * FROM Profile").all();
 // console.log(profiles);
+
+// // 勉強時間確認用
+// const studyRecords = db.prepare("SELECT * FROM StudyRecord").all();
+// console.log(studyRecords);
 
 // 起動
 app.listen(3000, () => {

@@ -1,116 +1,83 @@
 body {
     margin: 0;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     min-height: 100vh;
-
     background-color: #dfe7f7;
-
     font-family: sans-serif;
 }
 
 .profile {
     width: 900px;
-
     background-color: white;
-
     padding: 40px;
-
     border-radius: 20px;
-
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .profile h1 {
     text-align: center;
-
     margin-bottom: 30px;
 }
 
 .profile-container {
     display: flex;
-
     gap: 40px;
-
     margin-bottom: 20px;
 }
 
 .profile-info {
     flex: 1;
-
     display: flex;
-
     flex-direction: column;
-
     gap: 15px;
 }
 
 .info-box {
     background-color: #f4f7ff;
-
     padding: 15px;
-
     border-radius: 12px;
 }
 
 .title {
     margin: 0;
-
     color: #666;
-
     font-size: 14px;
 }
 
 .value {
     margin-top: 5px;
-
     margin-bottom: 0;
-
     font-size: 20px;
-
     font-weight: bold;
 }
 
 .study-history {
     flex: 1;
-
     background-color: #f4f7ff;
-
     padding: 20px;
-
     border-radius: 12px;
 }
 
 .study-history h2 {
     margin-top: 0;
-
     margin-bottom: 15px;
-
     font-size: 18px;
-
     color: #333;
 }
 
 .history-list {
     max-height: 300px;
-
     overflow-y: auto;
 }
 
 .history-item {
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     padding: 10px 0;
-
     border-bottom: 1px solid #e0e0e0;
-
     font-size: 14px;
 }
 
@@ -124,35 +91,24 @@ body {
 
 .history-item span:last-child {
     font-weight: bold;
-
     color: #3567e8;
 }
 
 .no-data {
     text-align: center;
-
     color: #999;
-
     margin: 20px 0;
 }
 
 .back-button {
     display: block;
-
     margin-top: 20px;
-
     padding: 12px;
-
     text-align: center;
-
     border-radius: 10px;
-
     background-color: #3567e8;
-
     color: white;
-
     text-decoration: none;
-
     font-weight: bold;
 }
 
@@ -162,19 +118,12 @@ body {
 
 .edit-button {
     display: inline-block;
-
     margin-bottom: 20px;
-
     padding: 10px 16px;
-
     border-radius: 10px;
-
     background-color: #4f7df5;
-
     color: white;
-
     text-decoration: none;
-
     font-weight: bold;
 }
 

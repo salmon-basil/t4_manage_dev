@@ -55,12 +55,16 @@ module.exports = (db) => {
         },
 
         getRankByUserId: (userId) => {
-            const stmt = db.prepare(`SELECT r.* FROM Rank r WHERE r.userId = ? LIMIT 1`);
+            const stmt = db.prepare(
+                `SELECT r.* FROM Rank r WHERE r.userId = ? LIMIT 1`,
+            );
             return stmt.get(userId);
         },
 
         updateRankForUser: (userId, newRank) => {
-            const stmt = db.prepare(`UPDATE Rank SET rank = ? WHERE userId = ?`);
+            const stmt = db.prepare(
+                `UPDATE Rank SET rank = ? WHERE userId = ?`,
+            );
             return stmt.run(newRank, userId);
         },
     };

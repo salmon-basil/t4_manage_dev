@@ -13,12 +13,10 @@
 
     <body>
         <div class="profile">
-
             <h1>プロフィール</h1>
             <a class="edit-button" href="./profileedit.html">プロフィールを編集</a>
             <div class="profile-container">
                 <div class="profile-info">
-
                     <div class="info-box">
                         <p class="title">ユーザー名</p>
                         <p id="profile-username" class="value">ー</p>
@@ -41,10 +39,8 @@
 
                     <div class="info-box">
                         <p class="title">ランク</p>
-                        <p class="value">ー
-                        </p>
+                        <p class="value">ー</p>
                     </div>
-
                 </div>
 
                 <div class="study-history">
@@ -55,10 +51,7 @@
                 </div>
             </div>
 
-            <a class="back-button" href="./homePage.html">
-                戻る
-            </a>
-
+            <a class="back-button" href="./homePage.html"> 戻る </a>
         </div>
 
         <script>
@@ -77,8 +70,10 @@
                     }
 
                     const profile = await response.json();
-                    document.getElementById('profile-username').textContent = profile.username || 'ー';
-                    document.getElementById('profile-nickname').textContent = profile.nickname || 'ー';
+                    document.getElementById('profile-username').textContent =
+                        profile.username || 'ー';
+                    document.getElementById('profile-nickname').textContent =
+                        profile.nickname || 'ー';
                     document.getElementById('profile-goal').textContent = profile.goal || 'ー';
                 } catch (error) {
                     console.error(error);
@@ -108,10 +103,12 @@
                         return;
                     }
 
-                    historyList.innerHTML = history.map(record => {
-                        const date = new Date(record.studyDate).toLocaleDateString('ja-JP');
-                        return `<div class="history-item"><span>${date}</span><span>${record.studyMinutes}分</span></div>`;
-                    }).join('');
+                    historyList.innerHTML = history
+                        .map((record) => {
+                            const date = new Date(record.studyDate).toLocaleDateString('ja-JP');
+                            return `<div class="history-item"><span>${date}</span><span>${record.studyMinutes}分</span></div>`;
+                        })
+                        .join('');
                 } catch (error) {
                     console.error(error);
                 }

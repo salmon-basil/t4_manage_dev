@@ -3,7 +3,10 @@ module.exports = (rankingRepository) => {
     return {
         getRankings: (rank, league) => {
             if (rank !== undefined && league !== undefined) {
-                return rankingRepository.getRankingsByLeagueAndRank(league, rank);
+                return rankingRepository.getRankingsByLeagueAndRank(
+                    league,
+                    rank,
+                );
             }
             if (rank !== undefined) {
                 return rankingRepository.getRankingsByRank(rank);
@@ -29,7 +32,8 @@ module.exports = (rankingRepository) => {
                 const item = all[i];
                 let newRank = item.rank || 0;
                 if (i < topCount) newRank = (newRank || 0) + 1;
-                else if (i >= bottomStart) newRank = Math.max(0, (newRank || 0) - 1);
+                else if (i >= bottomStart)
+                    newRank = Math.max(0, (newRank || 0) - 1);
 
                 if (newRank !== item.rank) {
                     rankingRepository.updateRankForUser(item.userId, newRank);
@@ -42,7 +46,10 @@ module.exports = (rankingRepository) => {
             if (!target) return [];
 
             // Return entries with same league and same rank
-            return rankingRepository.getRankingsByLeagueAndRank(target.league, target.rank);
+            return rankingRepository.getRankingsByLeagueAndRank(
+                target.league,
+                target.rank,
+            );
         },
     };
 };

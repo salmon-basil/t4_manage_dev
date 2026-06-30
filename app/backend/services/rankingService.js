@@ -52,6 +52,7 @@ module.exports = (rankingRepository) => {
             if (updates.length > 0) {
                 rankingRepository.batchUpdateRanks(updates);
             }
+            rankingRepository.resetAllWeeklyMinutes();
         },
 
         // Recompute rankings based on weeklyMinutes and adjust user.rank for top/bottom 25%

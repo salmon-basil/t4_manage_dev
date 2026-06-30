@@ -106,5 +106,9 @@ module.exports = (db) => {
             });
             run(updates);
         },
+
+        resetAllWeeklyMinutes: () => {
+            db.prepare(`UPDATE Rank SET weeklyMinutes = 0`).run();
+        },
     };
 };

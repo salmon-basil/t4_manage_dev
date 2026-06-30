@@ -20,5 +20,19 @@ module.exports = (db) => {
                 )
                 .all(userId);
         },
+
+        getWeeklyMinutes: (userId) => {
+            const row = db
+                .prepare(
+                    `
+                    SELECT COALESCE(SUM(studyMinutes), 0) AS total
+                    FROM StudyRecord
+                    WHERE userId = ?
+                      AND studyDate >= date('now', '-' || ((strftime('%w', 'now') + 6) % 7) || ' days')
+                `,
+                )
+                .get(userId);
+            return row ? row.total : 0;
+        },
     };
 };

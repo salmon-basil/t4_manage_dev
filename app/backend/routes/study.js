@@ -1,7 +1,7 @@
 // routes/study.js
 const express = require("express");
 
-module.exports = (studyRepository) => {
+module.exports = (studyService) => {
     const router = express.Router();
 
     router.post("/", (req, res) => {
@@ -12,7 +12,7 @@ module.exports = (studyRepository) => {
                 return res.status(400).json({ error: "不正な入力です。" });
             }
 
-            studyRepository.createStudyRecord(userId, studyDate, studyMinutes);
+            studyService.createStudyRecord(userId, studyDate, studyMinutes);
 
             res.json({ success: true });
         } catch (err) {
@@ -28,7 +28,7 @@ module.exports = (studyRepository) => {
                 return res.status(400).json({ error: "不正な入力です。" });
             }
 
-            const history = studyRepository.getStudyHistory(userId);
+            const history = studyService.getStudyHistory(userId);
 
             res.json(history || []);
         } catch (err) {

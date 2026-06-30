@@ -18,6 +18,7 @@ const profileRepository = require("./repositories/profileRepository")(db);
 // Service
 const userService = require("./services/userService")(userRepository, db);
 const rankingService = require("./services/rankingService")(rankingRepository);
+const studyService = require("./services/studyService")(studyRepository, rankingRepository);
 const profileService = require("./services/profileService")(
     profileRepository,
     userRepository,
@@ -26,7 +27,7 @@ const profileService = require("./services/profileService")(
 // Routes（依存注入）
 const userRoutes = require("./routes/user")(userService);
 const rankingRoutes = require("./routes/ranking")(rankingService);
-const studyRoutes = require("./routes/study")(studyRepository);
+const studyRoutes = require("./routes/study")(studyService);
 const profileRoutes = require("./routes/profile")(profileService);
 
 // ミドルウェア

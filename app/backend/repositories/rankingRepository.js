@@ -67,5 +67,12 @@ module.exports = (db) => {
             );
             return stmt.run(newRank, userId);
         },
+
+        updateWeeklyMinutesForUser: (userId, weeklyMinutes) => {
+            const stmt = db.prepare(
+                `UPDATE Rank SET weeklyMinutes = ? WHERE userId = ?`,
+            );
+            return stmt.run(weeklyMinutes, userId);
+        },
     };
 };

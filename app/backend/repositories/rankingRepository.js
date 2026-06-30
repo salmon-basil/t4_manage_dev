@@ -74,8 +74,6 @@ module.exports = (db) => {
             );
             return stmt.run(weeklyMinutes, userId);
         },
-<<<<<<< HEAD
-=======
 
         getAllLeagues: () => {
             return db
@@ -108,6 +106,5 @@ module.exports = (db) => {
             });
             run(updates);
         },
->>>>>>> 638096d (improve ranking system)
     };
 };

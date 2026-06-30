@@ -55,6 +55,30 @@ body {
     margin: 0;
 }
 
+.rank-update-btn {
+    display: block;
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px 14px;
+    background: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.rank-update-btn:hover {
+    background: #2563eb;
+}
+
+.rank-update-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
 .breadcrumb {
     margin: 0 0 8px;
     color: #667085;

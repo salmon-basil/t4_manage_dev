@@ -4,6 +4,15 @@ const express = require("express");
 module.exports = (rankingService) => {
     const router = express.Router();
 
+    router.post("/update", (req, res) => {
+        try {
+            rankingService.updateRanksByLeague();
+            res.json({ success: true });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
     router.get("/", (req, res) => {
         try {
             // If client provides userId, recompute ranks and return same-league & same-rank entries

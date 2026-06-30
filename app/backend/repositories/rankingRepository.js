@@ -74,5 +74,40 @@ module.exports = (db) => {
             );
             return stmt.run(weeklyMinutes, userId);
         },
+<<<<<<< HEAD
+=======
+
+        getAllLeagues: () => {
+            return db
+                .prepare(`SELECT DISTINCT league FROM Rank`)
+                .all()
+                .map((r) => r.league);
+        },
+
+        getUsersByLeague: (league) => {
+            return db
+                .prepare(
+                    `
+                    SELECT r.userId, r.weeklyMinutes, r.rank
+                    FROM Rank r
+                    WHERE r.league = ?
+                    ORDER BY r.weeklyMinutes DESC
+                `,
+                )
+                .all(league);
+        },
+
+        batchUpdateRanks: (updates) => {
+            const stmt = db.prepare(
+                `UPDATE Rank SET rank = ? WHERE userId = ?`,
+            );
+            const run = db.transaction((list) => {
+                for (const { userId, newRank } of list) {
+                    stmt.run(newRank, userId);
+                }
+            });
+            run(updates);
+        },
+>>>>>>> 638096d (improve ranking system)
     };
 };

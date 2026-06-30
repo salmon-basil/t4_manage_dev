@@ -23,6 +23,37 @@ module.exports = (rankingRepository) => {
             return rankingRepository.getAllRankings();
         },
 
+        updateRanksByLeague: () => {
+            const leagues = rankingRepository.getAllLeagues();
+            const updates = [];
+
+            for (const league of leagues) {
+                const users = rankingRepository.getUsersByLeague(league);
+                const n = users.length;
+                if (n === 0) continue;
+
+                const topCount = Math.ceil(n * 0.25);
+                const bottomStart = Math.max(topCount, n - Math.ceil(n * 0.25));
+
+                for (let i = 0; i < n; i++) {
+                    const user = users[i];
+                    let newRank = user.rank;
+                    if (i < topCount) {
+                        newRank = Math.min(user.rank + 1, 5);
+                    } else if (i >= bottomStart) {
+                        newRank = Math.max(user.rank - 1, 1);
+                    }
+                    if (newRank !== user.rank) {
+                        updates.push({ userId: user.userId, newRank });
+                    }
+                }
+            }
+
+            if (updates.length > 0) {
+                rankingRepository.batchUpdateRanks(updates);
+            }
+        },
+
         // Recompute rankings based on weeklyMinutes and adjust user.rank for top/bottom 25%
         // Then return rankings that match the given user's league and rank.
         recomputeAndGetForUser: (userId) => {

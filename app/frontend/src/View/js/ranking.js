@@ -22,6 +22,24 @@
         updateCountdown(countdownEl);
         setInterval(() => updateCountdown(countdownEl), 60000);
 
+        const updateBtn = document.getElementById('rank-update-btn');
+        if (updateBtn) {
+            updateBtn.addEventListener('click', async () => {
+                updateBtn.disabled = true;
+                updateBtn.textContent = '更新中...';
+                try {
+                    const res = await fetch(`${RANKING_API_BASE}/update`, { method: 'POST' });
+                    if (!res.ok) throw new Error('update failed');
+                    await init();
+                } catch (e) {
+                    console.error('ランク更新に失敗しました', e);
+                    alert('ランク更新に失敗しました');
+                    updateBtn.disabled = false;
+                    updateBtn.textContent = 'ランクを更新する';
+                }
+            });
+        }
+
         if (!currentUserId) {
             if (countdownEl) countdownEl.textContent = 'ログインが必要です';
             return;

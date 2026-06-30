@@ -77,6 +77,19 @@ CREATE TABLE IF NOT EXISTS StudyRecord (
 );
 `);
 
+// rank値が旧形式(3〜7)の場合、新形式(1〜5)に移行する
+const migrateRanks = () => {
+    const hasOldRanks = db
+        .prepare("SELECT COUNT(*) AS cnt FROM Rank WHERE rank > 5")
+        .get();
+    if (!hasOldRanks || hasOldRanks.cnt === 0) return;
+    db.prepare(
+        "UPDATE Rank SET rank = rank - 2 WHERE rank BETWEEN 3 AND 7",
+    ).run();
+};
+
+migrateRanks();
+
 const seedTestData = () => {
     const row = db.prepare("SELECT COUNT(*) AS cnt FROM User").get();
     if (row && row.cnt > 0) {
@@ -89,7 +102,7 @@ const seedTestData = () => {
             password: "alice123",
             displayName: "Alice",
             weeklyMinutes: 3000,
-            rank: 7,
+            rank: 5,
             league: "DIAMOND",
         },
         {
@@ -97,7 +110,7 @@ const seedTestData = () => {
             password: "bob123",
             displayName: "Bob",
             weeklyMinutes: 2850,
-            rank: 7,
+            rank: 5,
             league: "DIAMOND",
         },
         {
@@ -105,7 +118,7 @@ const seedTestData = () => {
             password: "charlie123",
             displayName: "Charlie",
             weeklyMinutes: 2700,
-            rank: 7,
+            rank: 5,
             league: "DIAMOND",
         },
         {
@@ -113,7 +126,7 @@ const seedTestData = () => {
             password: "david123",
             displayName: "David",
             weeklyMinutes: 2600,
-            rank: 7,
+            rank: 5,
             league: "DIAMOND",
         },
         {
@@ -121,7 +134,7 @@ const seedTestData = () => {
             password: "emma123",
             displayName: "Emma",
             weeklyMinutes: 2500,
-            rank: 7,
+            rank: 5,
             league: "DIAMOND",
         },
         {
@@ -129,7 +142,7 @@ const seedTestData = () => {
             password: "george123",
             displayName: "George",
             weeklyMinutes: 2300,
-            rank: 6,
+            rank: 4,
             league: "PLATINUM",
         },
         {
@@ -137,7 +150,7 @@ const seedTestData = () => {
             password: "hana123",
             displayName: "Hana",
             weeklyMinutes: 2200,
-            rank: 6,
+            rank: 4,
             league: "PLATINUM",
         },
         {
@@ -145,7 +158,7 @@ const seedTestData = () => {
             password: "ikuto123",
             displayName: "Ikuto",
             weeklyMinutes: 2100,
-            rank: 6,
+            rank: 4,
             league: "PLATINUM",
         },
         {
@@ -153,7 +166,7 @@ const seedTestData = () => {
             password: "julia123",
             displayName: "Julia",
             weeklyMinutes: 2000,
-            rank: 6,
+            rank: 4,
             league: "PLATINUM",
         },
         {
@@ -161,7 +174,7 @@ const seedTestData = () => {
             password: "kaito123",
             displayName: "Kaito",
             weeklyMinutes: 1900,
-            rank: 6,
+            rank: 4,
             league: "PLATINUM",
         },
         {
@@ -169,7 +182,7 @@ const seedTestData = () => {
             password: "mika123",
             displayName: "Mika",
             weeklyMinutes: 1700,
-            rank: 5,
+            rank: 3,
             league: "GOLD",
         },
         {
@@ -177,7 +190,7 @@ const seedTestData = () => {
             password: "naoki123",
             displayName: "Naoki",
             weeklyMinutes: 1600,
-            rank: 5,
+            rank: 3,
             league: "GOLD",
         },
         {
@@ -185,7 +198,7 @@ const seedTestData = () => {
             password: "ohana123",
             displayName: "Ohana",
             weeklyMinutes: 1500,
-            rank: 5,
+            rank: 3,
             league: "GOLD",
         },
         {
@@ -193,7 +206,7 @@ const seedTestData = () => {
             password: "peter123",
             displayName: "Peter",
             weeklyMinutes: 1400,
-            rank: 5,
+            rank: 3,
             league: "GOLD",
         },
         {
@@ -201,7 +214,7 @@ const seedTestData = () => {
             password: "rina123",
             displayName: "Rina",
             weeklyMinutes: 1300,
-            rank: 5,
+            rank: 3,
             league: "GOLD",
         },
         {
@@ -209,7 +222,7 @@ const seedTestData = () => {
             password: "taku123",
             displayName: "Taku",
             weeklyMinutes: 1100,
-            rank: 4,
+            rank: 2,
             league: "SILVER",
         },
         {
@@ -217,7 +230,7 @@ const seedTestData = () => {
             password: "umi123",
             displayName: "Umi",
             weeklyMinutes: 1000,
-            rank: 4,
+            rank: 2,
             league: "SILVER",
         },
         {
@@ -225,7 +238,7 @@ const seedTestData = () => {
             password: "yuki123",
             displayName: "Yuki",
             weeklyMinutes: 950,
-            rank: 4,
+            rank: 2,
             league: "SILVER",
         },
         {
@@ -233,7 +246,7 @@ const seedTestData = () => {
             password: "zara123",
             displayName: "Zara",
             weeklyMinutes: 900,
-            rank: 4,
+            rank: 2,
             league: "SILVER",
         },
         {
@@ -241,7 +254,7 @@ const seedTestData = () => {
             password: "aki123",
             displayName: "Aki",
             weeklyMinutes: 850,
-            rank: 4,
+            rank: 2,
             league: "SILVER",
         },
         {
@@ -249,7 +262,7 @@ const seedTestData = () => {
             password: "chika123",
             displayName: "Chika",
             weeklyMinutes: 750,
-            rank: 3,
+            rank: 1,
             league: "BRONZE",
         },
         {
@@ -257,7 +270,7 @@ const seedTestData = () => {
             password: "dori123",
             displayName: "Dori",
             weeklyMinutes: 700,
-            rank: 3,
+            rank: 1,
             league: "BRONZE",
         },
         {
@@ -265,7 +278,7 @@ const seedTestData = () => {
             password: "eri123",
             displayName: "Eri",
             weeklyMinutes: 650,
-            rank: 3,
+            rank: 1,
             league: "BRONZE",
         },
         {
@@ -273,7 +286,7 @@ const seedTestData = () => {
             password: "fumiya123",
             displayName: "Fumiya",
             weeklyMinutes: 600,
-            rank: 3,
+            rank: 1,
             league: "BRONZE",
         },
         {
@@ -281,7 +294,7 @@ const seedTestData = () => {
             password: "goro123",
             displayName: "Goro",
             weeklyMinutes: 550,
-            rank: 3,
+            rank: 1,
             league: "BRONZE",
         },
     ];

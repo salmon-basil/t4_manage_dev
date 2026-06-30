@@ -11,7 +11,7 @@ module.exports = (rankingService) => {
                 ? parseInt(req.query.userId, 10)
                 : undefined;
             if (userId) {
-                const data = rankingService.recomputeAndGetForUser(userId);
+                const data = rankingService.getRankingsForUser(userId);
                 return res.json(data);
             }
 

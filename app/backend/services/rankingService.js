@@ -1,6 +1,15 @@
 // services/rankingService.js
 module.exports = (rankingRepository) => {
     return {
+        getRankingsForUser: (userId) => {
+            const userRank = rankingRepository.getRankByUserId(userId);
+            if (!userRank) return [];
+            return rankingRepository.getRankingsByLeagueAndRank(
+                userRank.league,
+                userRank.rank,
+            );
+        },
+
         getRankings: (rank, league) => {
             if (rank !== undefined && league !== undefined) {
                 return rankingRepository.getRankingsByLeagueAndRank(

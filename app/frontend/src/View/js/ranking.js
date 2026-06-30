@@ -1,24 +1,16 @@
 (() => {
-    document.addEventListener('DOMContentLoaded', init);
     const RANKING_API_BASE = 'http://localhost:3000/api/rankings';
 
-    const LEAGUE_INFO = {
-        DIAMOND: { cls: 'tier-diamond', img: 'diamond.png', label: 'DIAMOND' },
-        PLATINUM: { cls: 'tier-platinum', img: 'platinum.png', label: 'PLATINUM' },
-        GOLD: { cls: 'tier-gold', img: 'gold.png', label: 'GOLD' },
-        SILVER: { cls: 'tier-silver', img: 'silver.png', label: 'SILVER' },
-        BRONZE: { cls: 'tier-bronze', img: 'bronze.png', label: 'BRONZE' },
+    const RANK_INFO = {
+        1: { cls: 'tier-bronze',   img: 'bronze.png',   label: 'BRONZE' },
+        2: { cls: 'tier-silver',   img: 'silver.png',   label: 'SILVER' },
+        3: { cls: 'tier-gold',     img: 'gold.png',     label: 'GOLD' },
+        4: { cls: 'tier-platinum', img: 'platinum.png', label: 'PLATINUM' },
+        5: { cls: 'tier-diamond',  img: 'diamond.png',  label: 'DIAMOND' },
     };
 
-    async function init() {
-        const tbody = document.getElementById('ranking-tbody');
-        const userRankEl = document.getElementById('user-rank-value');
-        const rankImg = document.querySelector('.user-rank-top-img');
+    document.addEventListener('DOMContentLoaded', () => {
         const countdownEl = document.getElementById('countdown-text');
-
-        const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
-        const currentUserId = storedUser && storedUser.id ? storedUser.id : null;
-
         updateCountdown(countdownEl);
         setInterval(() => updateCountdown(countdownEl), 60000);
 
@@ -30,20 +22,29 @@
                 try {
                     const res = await fetch(`${RANKING_API_BASE}/update`, { method: 'POST' });
                     if (!res.ok) throw new Error('update failed');
-                    await init();
+                    await renderRanking();
                 } catch (e) {
                     console.error('ランク更新に失敗しました', e);
                     alert('ランク更新に失敗しました');
+                } finally {
                     updateBtn.disabled = false;
                     updateBtn.textContent = 'ランクを更新する';
                 }
             });
         }
 
-        if (!currentUserId) {
-            if (countdownEl) countdownEl.textContent = 'ログインが必要です';
-            return;
-        }
+        renderRanking();
+    });
+
+    async function renderRanking() {
+        const tbody = document.getElementById('ranking-tbody');
+        const userRankEl = document.getElementById('user-rank-value');
+        const rankImg = document.querySelector('.user-rank-top-img');
+
+        const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+        const currentUserId = storedUser && storedUser.id ? storedUser.id : null;
+
+        if (!currentUserId) return;
 
         let data = [];
         try {
@@ -54,15 +55,17 @@
             console.error('ランキング取得に失敗しました', e);
         }
 
-        // 自分のエントリからリーグを取得
+        // 自分のエントリから rank（1〜5）を取得して画像・バッジを更新
         const myEntry = data.find((item) => Number(item.userId) === Number(currentUserId));
-        const myLeague = myEntry ? myEntry.league : null;
-        const info = LEAGUE_INFO[myLeague] || { cls: 'tier-bronze', img: 'bronze.png', label: '---' };
+        const myRank = myEntry ? myEntry.rank : null;
+        const info = RANK_INFO[myRank] || { cls: 'tier-bronze', img: 'bronze.png', label: '---' };
 
-        // バッジ・画像を更新
-        Object.values(LEAGUE_INFO).forEach((v) => userRankEl.classList.remove(v.cls));
-        userRankEl.textContent = info.label;
-        userRankEl.classList.add(info.cls);
+        if (userRankEl) {
+            Object.values(RANK_INFO).forEach((v) => userRankEl.classList.remove(v.cls));
+            userRankEl.textContent = info.label;
+            userRankEl.classList.add(info.cls);
+        }
+
         if (rankImg) {
             rankImg.src = `../../../../../public/${info.img}`;
             rankImg.alt = info.label;
@@ -90,7 +93,7 @@
         tbody.innerHTML = '';
         const n = data.length;
         const topCount = Math.ceil(n * 0.25);
-        const bottomStart = n - topCount;
+        const bottomStart = Math.max(topCount, n - Math.ceil(n * 0.25));
 
         data.forEach((item, idx) => {
             const tr = document.createElement('tr');

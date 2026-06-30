@@ -106,5 +106,6 @@ module.exports = (db) => {
             });
             run(updates);
         },
+>>>>>>> 638096d (improve ranking system)
     };
 };

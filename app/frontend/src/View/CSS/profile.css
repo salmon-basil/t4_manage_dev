@@ -55,6 +55,7 @@ body {
 
 .study-history {
     flex: 1;
+    min-width: 0;
     background-color: #f4f7ff;
     padding: 20px;
     border-radius: 12px;
@@ -68,8 +69,9 @@ body {
 }
 
 .history-list {
-    max-height: 300px;
+    max-height: 220px;
     overflow-y: auto;
+    margin-bottom: 20px;
 }
 
 .history-item {
@@ -83,6 +85,48 @@ body {
 
 .history-item:last-child {
     border-bottom: none;
+}
+
+.history-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 10px 0 0;
+    min-height: 180px;
+    border-top: 1px solid #e0e0e0;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 10px;
+}
+
+.chart-bar {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+    min-width: 60px;
+}
+
+.bar-value {
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.bar-fill {
+    width: 100%;
+    min-height: 16px;
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(180deg, #5e8cff 0%, #2c5cd7 100%);
+    transition: height 0.3s ease;
+}
+
+.bar-label {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .history-item span:first-child {

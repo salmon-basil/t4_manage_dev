@@ -48,6 +48,7 @@
                     <div class="history-list">
                         <p class="no-data">データがありません</p>
                     </div>
+                    <div class="history-chart" aria-label="勉強時間の棒グラフ"></div>
                 </div>
             </div>
 
@@ -85,28 +86,52 @@
 
             const loadStudyHistory = async () => {
                 try {
-                    const user = JSON.parse(localStorage.getItem('user'));
-                    if (!user || !user.userId) {
+                    const user = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (!user || !user.id) {
                         return;
                     }
 
-                    const response = await fetch(`${API_BASE}/study/${user.userId}`);
+                    const response = await fetch(`${API_BASE}/study-records/${user.id}`);
                     if (!response.ok) {
                         throw new Error('勉強履歴の取得に失敗しました');
                     }
 
                     const history = await response.json();
                     const historyList = document.querySelector('.history-list');
+                    const historyChart = document.querySelector('.history-chart');
 
                     if (history.length === 0) {
                         historyList.innerHTML = '<p class="no-data">データがありません</p>';
+                        historyChart.innerHTML = '';
                         return;
                     }
+
+                    const maxMinutes = Math.max(...history.map((record) => record.studyMinutes), 1);
 
                     historyList.innerHTML = history
                         .map((record) => {
                             const date = new Date(record.studyDate).toLocaleDateString('ja-JP');
                             return `<div class="history-item"><span>${date}</span><span>${record.studyMinutes}分</span></div>`;
+                        })
+                        .join('');
+
+                    historyChart.innerHTML = history
+                        .slice()
+                        .reverse()
+                        .map((record) => {
+                            const date = new Date(record.studyDate).toLocaleDateString('ja-JP', {
+                                month: 'numeric',
+                                day: 'numeric',
+                            });
+                            const height = Math.round((record.studyMinutes / maxMinutes) * 100);
+
+                            return `
+                                <div class="chart-bar">
+                                    <div class="bar-value">${record.studyMinutes}分</div>
+                                    <div class="bar-fill" style="height: ${height}%;"></div>
+                                    <div class="bar-label">${date}</div>
+                                </div>
+                            `;
                         })
                         .join('');
                 } catch (error) {

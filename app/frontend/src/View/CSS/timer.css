@@ -5,7 +5,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #f5f7fa;
+    background-color: #dfe7f7;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
@@ -70,22 +70,22 @@ body {
     width: 100%;
     padding: 0.6rem;
     margin-top: 0.5rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #cfd9f0;
     border-radius: 6px;
     font-size: 1rem;
-    background-color: #fafafa;
+    background-color: #f4f7ff;
     cursor: pointer;
     transition: border-color 0.2s ease;
     box-sizing: border-box;
 }
 
 .tag-section select:hover {
-    border-color: #47bafc;
+    border-color: #3567e8;
 }
 
 .tag-section select:focus {
     outline: none;
-    border-color: #2ea3e6;
+    border-color: #3567e8;
     box-shadow: 0 0 0 2px rgba(47, 163, 230, 0.1);
 }
 
@@ -118,7 +118,7 @@ button {
     margin: 0;
     border: none;
     border-radius: 8px;
-    background-color: #47bafc;
+    background-color: #3567e8;
     color: white;
     font-size: 1rem;
     font-weight: 500;
@@ -166,7 +166,7 @@ button {
 /* ホバー */
 button:hover {
     transform: scale(1.05);
-    background-color: #2ea3e6;
+    background-color: #3567e8;
     box-shadow: 0 4px 12px rgba(47, 186, 252, 0.3);
 }
 

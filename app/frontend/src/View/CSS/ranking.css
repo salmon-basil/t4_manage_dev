@@ -79,6 +79,15 @@ body {
     cursor: not-allowed;
 }
 
+.rank-update-btn + .rank-update-btn {
+    margin-top: 8px;
+}
+
+/* admin以外には見せない検証用ボタン */
+.admin-only {
+    display: none;
+}
+
 .breadcrumb {
     margin: 0 0 8px;
     color: #667085;

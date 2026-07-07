@@ -41,5 +41,12 @@ module.exports = (db) => {
             );
             return stmt.get(id);
         },
+
+        findAllIds: () => {
+            return db
+                .prepare("SELECT id FROM User")
+                .all()
+                .map((row) => row.id);
+        },
     };
 };

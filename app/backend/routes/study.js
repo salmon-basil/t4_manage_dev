@@ -20,6 +20,15 @@ module.exports = (studyService) => {
         }
     });
 
+    router.post("/random-all", (req, res) => {
+        try {
+            const result = studyService.addRandomStudyTimeForAllUsers();
+            res.json({ success: true, ...result });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
     router.get("/:userId", (req, res) => {
         try {
             const { userId } = req.params;

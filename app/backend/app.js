@@ -18,7 +18,11 @@ const profileRepository = require("./repositories/profileRepository")(db);
 // Service
 const userService = require("./services/userService")(userRepository, db);
 const rankingService = require("./services/rankingService")(rankingRepository);
-const studyService = require("./services/studyService")(studyRepository, rankingRepository);
+const studyService = require("./services/studyService")(
+    studyRepository,
+    rankingRepository,
+    userRepository,
+);
 const profileService = require("./services/profileService")(
     profileRepository,
     userRepository,

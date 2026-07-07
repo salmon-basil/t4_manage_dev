@@ -1,5 +1,6 @@
 (() => {
     const RANKING_API_BASE = 'http://localhost:3000/api/rankings';
+    const STUDY_API_BASE = 'http://localhost:3000/api/study-records';
 
     const RANK_INFO = {
         1: { cls: 'tier-bronze',   img: 'bronze.png',   label: 'BRONZE' },
@@ -18,6 +19,15 @@
         updateCountdown(countdownEl);
         setInterval(() => updateCountdown(countdownEl), 60000);
 
+        // admin以外には検証用ボタン（ランク更新・ランダム学習時間追加）を見せない
+        const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+        const isAdmin = storedUser && storedUser.username === 'admin';
+        if (isAdmin) {
+            document.querySelectorAll('.admin-only').forEach((el) => {
+                el.classList.remove('admin-only');
+            });
+        }
+
         const updateBtn = document.getElementById('rank-update-btn');
         if (updateBtn) {
             updateBtn.addEventListener('click', async () => {
@@ -33,6 +43,25 @@
                 } finally {
                     updateBtn.disabled = false;
                     updateBtn.textContent = 'ランクを更新する';
+                }
+            });
+        }
+
+        const randomStudyBtn = document.getElementById('random-study-btn');
+        if (randomStudyBtn) {
+            randomStudyBtn.addEventListener('click', async () => {
+                randomStudyBtn.disabled = true;
+                randomStudyBtn.textContent = '追加中...';
+                try {
+                    const res = await fetch(`${STUDY_API_BASE}/random-all`, { method: 'POST' });
+                    if (!res.ok) throw new Error('random study add failed');
+                    await renderRanking();
+                } catch (e) {
+                    console.error('ランダム学習時間の追加に失敗しました', e);
+                    alert('ランダム学習時間の追加に失敗しました');
+                } finally {
+                    randomStudyBtn.disabled = false;
+                    randomStudyBtn.textContent = '勉強時間をランダムで追加';
                 }
             });
         }

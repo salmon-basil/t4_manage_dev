@@ -34,7 +34,7 @@
 
                     <div class="info-box">
                         <p class="title">総勉強時間</p>
-                        <p class="value">ー</p>
+                        <p id="profile-totalTime" class="value">ー</p>
                     </div>
 
                     <div class="info-box">
@@ -95,6 +95,31 @@
                 }
             };
 
+            const loadTotalStudyTime = async () => {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user || !user.id) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE}/study-records/total/${user.id}`);
+                    if (!response.ok) {
+                        throw new Error('総勉強時間の取得に失敗しました');
+                    }
+
+                    const data = await response.json();
+
+                    const minutes = data.totalMinutes || 0;
+                    const hours = (minutes / 60).toFixed(1);
+
+                    document.getElementById('profile-totalTime').textContent =
+                        `${hours}時間（${minutes}分）`;
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('profile-totalTime').textContent = 'ー';
+                }
+            };
+
             const loadStudyHistory = async () => {
                 try {
                     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -152,6 +177,7 @@
 
             window.addEventListener('DOMContentLoaded', () => {
                 loadProfileData();
+                loadTotalStudyTime();
                 loadStudyHistory();
             });
         </script>

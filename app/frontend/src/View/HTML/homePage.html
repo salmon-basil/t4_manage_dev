@@ -18,7 +18,7 @@
                 <p><strong>ユーザー名</strong></p>
                 <p id="username">ー</p>
                 <p><strong>総勉強時間</strong></p>
-                <p>ー</p>
+                <p id="totalTime">ー</p>
             </div>
 
             <div class="button-group">
@@ -54,7 +54,28 @@
                 }
             };
 
-            window.addEventListener('DOMContentLoaded', loadUsername);
+            const loadTotalStudyTime = async () => {
+                const userData = JSON.parse(localStorage.getItem('user') || 'null');
+                if (!userData || !userData.id) {
+                    console.log('ユーザー情報がありません');
+                    return;
+                }
+                try {
+                    const response = await fetch(`${API_BASE}/study-records/total/${userData.id}`);
+                    if (!response.ok) {
+                        throw new Error('総勉強時間の取得に失敗しました');
+                    }
+                    const data = await response.json();
+                    document.getElementById('totalTime').textContent = `${data.totalMinutes} 分`;
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+
+            window.addEventListener('DOMContentLoaded', () => {
+                loadUsername();
+                loadTotalStudyTime();
+            });
         </script>
     </body>
 </html>

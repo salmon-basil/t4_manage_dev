@@ -29,6 +29,22 @@ module.exports = (studyService) => {
         }
     });
 
+    router.get("/total/:userId", (req, res) => {
+        try {
+            const { userId } = req.params;
+
+            if (!userId) {
+                return res.status(400).json({ error: "不正な入力です。" });
+            }
+
+            const total = studyService.getTotalStudyMinutes(userId);
+
+            res.json({ totalMinutes: total });
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    });
+
     router.get("/:userId", (req, res) => {
         try {
             const { userId } = req.params;

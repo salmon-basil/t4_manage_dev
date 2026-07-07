@@ -11,6 +11,10 @@ module.exports = (studyRepository, rankingRepository, userRepository) => {
             return studyRepository.getStudyHistory(userId);
         },
 
+        getTotalStudyMinutes: (userId) => {
+            return studyRepository.getTotalStudyMinutes(userId);
+        },
+
         // 検証用: 全ユーザーにランダムな学習時間を追加する
         addRandomStudyTimeForAllUsers: () => {
             const userIds = userRepository.findAllIds();

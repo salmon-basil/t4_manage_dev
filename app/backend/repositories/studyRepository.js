@@ -34,5 +34,19 @@ module.exports = (db) => {
                 .get(userId);
             return row ? row.total : 0;
         },
+
+        getTotalStudyMinutes: (userId) => {
+            const row = db
+                .prepare(
+                    `
+            SELECT COALESCE(SUM(studyMinutes), 0) AS total
+            FROM StudyRecord
+            WHERE userId = ?
+        `,
+                )
+                .get(userId);
+
+            return row.total;
+        },
     };
 };

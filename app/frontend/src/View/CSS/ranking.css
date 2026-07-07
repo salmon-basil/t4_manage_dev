@@ -17,6 +17,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(180deg, #e6efff 0%, #f9fbff 55%, #ffffff 100%);
+    transition: background 0.4s ease;
 }
 
 .ranking-panel {
@@ -26,6 +28,70 @@ body {
     box-shadow: 0 28px 80px rgba(31, 42, 68, 0.12);
     padding: 32px;
     border: 1px solid rgba(100, 116, 139, 0.12);
+    transition:
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+}
+
+/* 表示中のランクに合わせた全体テーマカラー */
+.ranking-page.rank-theme-1 {
+    background: linear-gradient(180deg, #fff3e6 0%, #ffe3c2 55%, #fffaf4 100%);
+}
+.ranking-page.rank-theme-1 .ranking-panel {
+    border-color: rgba(217, 119, 6, 0.3);
+    box-shadow: 0 28px 80px rgba(217, 119, 6, 0.16);
+}
+.ranking-page.rank-theme-1 .ranking-table th {
+    background: #fdecd9;
+    color: #7c3a00;
+}
+
+.ranking-page.rank-theme-2 {
+    background: linear-gradient(180deg, #eef1f5 0%, #dde3ec 55%, #fafbfd 100%);
+}
+.ranking-page.rank-theme-2 .ranking-panel {
+    border-color: rgba(100, 116, 139, 0.35);
+    box-shadow: 0 28px 80px rgba(100, 116, 139, 0.16);
+}
+.ranking-page.rank-theme-2 .ranking-table th {
+    background: #e7eaef;
+    color: #334155;
+}
+
+.ranking-page.rank-theme-3 {
+    background: linear-gradient(180deg, #fff9e2 0%, #fdedb8 55%, #fffdf3 100%);
+}
+.ranking-page.rank-theme-3 .ranking-panel {
+    border-color: rgba(245, 158, 11, 0.35);
+    box-shadow: 0 28px 80px rgba(245, 158, 11, 0.18);
+}
+.ranking-page.rank-theme-3 .ranking-table th {
+    background: #fdf1c8;
+    color: #92620a;
+}
+
+.ranking-page.rank-theme-4 {
+    background: linear-gradient(180deg, #eef2ff 0%, #d9e6fb 55%, #f7faff 100%);
+}
+.ranking-page.rank-theme-4 .ranking-panel {
+    border-color: rgba(96, 165, 250, 0.4);
+    box-shadow: 0 28px 80px rgba(96, 165, 250, 0.2);
+}
+.ranking-page.rank-theme-4 .ranking-table th {
+    background: #e3ecfc;
+    color: #1e3a8a;
+}
+
+.ranking-page.rank-theme-5 {
+    background: linear-gradient(180deg, #e3fbff 0%, #bdf1ff 55%, #f3feff 100%);
+}
+.ranking-page.rank-theme-5 .ranking-panel {
+    border-color: rgba(14, 165, 233, 0.4);
+    box-shadow: 0 28px 80px rgba(14, 165, 233, 0.2);
+}
+.ranking-page.rank-theme-5 .ranking-table th {
+    background: #d7f6ff;
+    color: #024a6b;
 }
 
 .ranking-header {
@@ -379,6 +445,9 @@ body {
     font-weight: 700;
     letter-spacing: 0.01em;
     border-bottom: 2px solid #e2e8f0;
+    transition:
+        background 0.4s ease,
+        color 0.4s ease;
 }
 
 .ranking-table tbody tr {

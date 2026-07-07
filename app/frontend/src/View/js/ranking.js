@@ -102,6 +102,18 @@
         rankImg.alt = info.label;
     }
 
+    // ページ全体の配色を、今見ているランキングのrankに合わせて変える
+    function applyRankTheme(rank) {
+        const page = document.querySelector('.ranking-page');
+        if (!page) return;
+        for (let r = 1; r <= 5; r++) {
+            page.classList.remove(`rank-theme-${r}`);
+        }
+        if (RANK_INFO[rank]) {
+            page.classList.add(`rank-theme-${rank}`);
+        }
+    }
+
     async function renderRanking() {
         const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
         const currentUserId = storedUser && storedUser.id ? storedUser.id : null;
@@ -143,6 +155,7 @@
         setActiveTab(myRank);
         updateMyRankText(myRank);
         updateRankImage(myRank);
+        applyRankTheme(myRank);
         renderTable(data, currentUserId);
     }
 
@@ -163,6 +176,7 @@
         }
 
         updateRankImage(rank);
+        applyRankTheme(rank);
         renderTable(data, currentUserId);
     }
 

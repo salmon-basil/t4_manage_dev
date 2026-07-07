@@ -39,6 +39,10 @@ function sendStudyTime() {
         .then((response) => {
             if (response.ok) {
                 alert('学習記録を登録しました！');
+                if (rankProgress) {
+                    rankProgress.weeklyMinutes =
+                        (rankProgress.weeklyMinutes || 0) + durationMinutes;
+                }
                 document.getElementById('reset').click();
             } else {
                 alert('登録に失敗しました。もう一度お試しください。');

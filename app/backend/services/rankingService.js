@@ -28,23 +28,31 @@ module.exports = (rankingRepository) => {
             const updates = [];
 
             for (const league of leagues) {
-                const users = rankingRepository.getUsersByLeague(league);
-                const n = users.length;
-                if (n === 0) continue;
+                for (let rank = 1; rank <= 5; rank++) {
+                    const users = rankingRepository.getUsersByLeagueAndRank(
+                        league,
+                        rank,
+                    );
+                    const n = users.length;
+                    if (n === 0) continue;
 
-                const topCount = Math.ceil(n * 0.25);
-                const bottomStart = Math.max(topCount, n - Math.ceil(n * 0.25));
+                    const topCount = Math.ceil(n * 0.25);
+                    const bottomStart = Math.max(
+                        topCount,
+                        n - Math.ceil(n * 0.25),
+                    );
 
-                for (let i = 0; i < n; i++) {
-                    const user = users[i];
-                    let newRank = user.rank;
-                    if (i < topCount) {
-                        newRank = Math.min(user.rank + 1, 5);
-                    } else if (i >= bottomStart) {
-                        newRank = Math.max(user.rank - 1, 1);
-                    }
-                    if (newRank !== user.rank) {
-                        updates.push({ userId: user.userId, newRank });
+                    for (let i = 0; i < n; i++) {
+                        const user = users[i];
+                        let newRank = user.rank;
+                        if (i < topCount) {
+                            newRank = Math.min(user.rank + 1, 5);
+                        } else if (i >= bottomStart) {
+                            newRank = Math.max(user.rank - 1, 1);
+                        }
+                        if (newRank !== user.rank) {
+                            updates.push({ userId: user.userId, newRank });
+                        }
                     }
                 }
             }
@@ -53,6 +61,53 @@ module.exports = (rankingRepository) => {
                 rankingRepository.batchUpdateRanks(updates);
             }
             rankingRepository.resetAllWeeklyMinutes();
+        },
+
+        // ユーザーの現在の週間学習時間を基に、昇格まで／降格回避まで何分必要かを計算する
+        getPromotionStatus: (userId) => {
+            const userRank = rankingRepository.getRankByUserId(userId);
+            if (!userRank) return null;
+
+            const leagueUsers = rankingRepository.getUsersByLeagueAndRank(
+                userRank.league,
+                userRank.rank,
+            );
+            const n = leagueUsers.length;
+            const topCount = Math.ceil(n * 0.25);
+            const bottomStart = Math.max(topCount, n - Math.ceil(n * 0.25));
+
+            const index = leagueUsers.findIndex(
+                (u) => Number(u.userId) === Number(userId),
+            );
+
+            const zone =
+                index >= 0 && index < topCount
+                    ? "top"
+                    : index >= bottomStart
+                      ? "bottom"
+                      : "middle";
+
+            const atMaxRank = userRank.rank >= 5;
+
+            const promotionBoundary = leagueUsers[topCount - 1];
+            const maintainBoundary = leagueUsers[bottomStart - 1];
+
+            return {
+                userId: Number(userId),
+                league: userRank.league,
+                rank: userRank.rank,
+                weeklyMinutes: userRank.weeklyMinutes,
+                zone,
+                atMaxRank,
+                promotionThresholdMinutes:
+                    zone !== "top" && !atMaxRank && promotionBoundary
+                        ? promotionBoundary.weeklyMinutes
+                        : null,
+                maintainThresholdMinutes:
+                    zone === "bottom" && maintainBoundary
+                        ? maintainBoundary.weeklyMinutes
+                        : null,
+            };
         },
 
         // Recompute rankings based on weeklyMinutes and adjust user.rank for top/bottom 25%

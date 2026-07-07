@@ -3,6 +3,7 @@ let startTime; // タイマー開始時刻を保存
 let elapsedTime = 0; // 累積経過時間（ミリ秒）
 let timerInterval; // setIntervalのID
 let isRunning = false; // タイマー実行中フラグ
+let rankProgress = null; // サーバーから取得したランク進捗の基準値
 
 // ===== 日付と時刻を更新する関数 =====
 /**
@@ -49,6 +50,82 @@ function updateTime() {
         `${String(hours).padStart(2, '0')}:` +
         `${String(minutes).padStart(2, '0')}:` +
         `${String(seconds).padStart(2, '0')}`;
+
+    updateRankProgressDisplay();
+}
+
+// ===== ランク進捗取得関数 =====
+/**
+ * サーバーから現在のランク進捗（昇格/維持の基準値）を取得する
+ */
+async function loadRankProgress() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!user.id) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/rankings/status/${user.id}`);
+        if (!response.ok) {
+            throw new Error('ランク状況の取得に失敗しました');
+        }
+        rankProgress = await response.json();
+    } catch (error) {
+        console.error(error);
+        rankProgress = null;
+    }
+
+    updateRankProgressDisplay();
+}
+
+// ===== ランク進捗表示更新関数 =====
+/**
+ * これまでの週間勉強時間＋現在のタイマー経過時間から、
+ * 昇格まで／ランク維持まであと何分必要かを表示する
+ */
+function updateRankProgressDisplay() {
+    const el = document.getElementById('rank-progress');
+    if (!el) {
+        return;
+    }
+
+    if (!rankProgress) {
+        el.textContent = 'ランク状況を取得できませんでした';
+        return;
+    }
+
+    const runningMs = isRunning ? Date.now() - startTime : 0;
+    const sessionMinutes = Math.floor((elapsedTime + runningMs) / 60000);
+    const liveWeeklyMinutes = (rankProgress.weeklyMinutes || 0) + sessionMinutes;
+
+    if (rankProgress.zone === 'bottom') {
+        const threshold = rankProgress.maintainThresholdMinutes;
+        const needed =
+            threshold === null ? 0 : Math.max(0, threshold - liveWeeklyMinutes + 1);
+        el.textContent =
+            needed > 0
+                ? `現在のランクを維持するには、あと${needed}分の勉強が必要です`
+                : 'ランク維持圏内に入りました！';
+        return;
+    }
+
+    if (rankProgress.atMaxRank) {
+        el.textContent = '既に最高ランクです';
+        return;
+    }
+
+    if (rankProgress.zone === 'top') {
+        el.textContent = '昇格圏内です！このまま今週を終えれば昇格できます';
+        return;
+    }
+
+    const threshold = rankProgress.promotionThresholdMinutes;
+    const needed =
+        threshold === null ? 0 : Math.max(0, threshold - liveWeeklyMinutes + 1);
+    el.textContent =
+        needed > 0
+            ? `上のランクに上がるには、あと${needed}分の勉強が必要です`
+            : '昇格圏内に入りました！';
 }
 
 // ===== スタートボタンのイベントハンドラー =====
@@ -58,6 +135,7 @@ document.getElementById('start').onclick = () => {
         timerInterval = setInterval(updateTime, 1000); // 1秒ごとに表示更新
         isRunning = true;
         saveState();
+        updateRankProgressDisplay();
     }
 };
 
@@ -68,6 +146,7 @@ document.getElementById('stop').onclick = () => {
         elapsedTime += Date.now() - startTime; // 経過時間を累積に追加
         isRunning = false;
         saveState();
+        updateRankProgressDisplay();
     }
 };
 
@@ -78,6 +157,7 @@ document.getElementById('reset').onclick = () => {
     isRunning = false;
     localStorage.removeItem('timer');
     document.getElementById('time').textContent = '00:00:00'; // 表示をリセット
+    updateRankProgressDisplay();
 };
 
 // ===== 登録ボタンのイベントハンドラー =====
@@ -88,6 +168,7 @@ window.addEventListener('DOMContentLoaded', () => {
     updateDateTime();
     // 毎分、日付と時刻を更新
     setInterval(updateDateTime, 60000);
+    loadRankProgress();
 });
 
 // ===== タブ切り替え時の自動停止・再開 =====

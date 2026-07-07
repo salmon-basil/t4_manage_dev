@@ -13,6 +13,21 @@ module.exports = (rankingService) => {
         }
     });
 
+    router.get("/status/:userId", (req, res) => {
+        try {
+            const { userId } = req.params;
+            const data = rankingService.getPromotionStatus(userId);
+            if (!data) {
+                return res
+                    .status(404)
+                    .json({ error: "ランキングデータが見つかりません。" });
+            }
+            res.json(data);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+
     router.get("/", (req, res) => {
         try {
             // If client provides userId, recompute ranks and return same-league & same-rank entries

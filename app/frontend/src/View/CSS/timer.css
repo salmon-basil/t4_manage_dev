@@ -112,6 +112,15 @@ body {
     grid-column: 1 / -1;
 }
 
+/* ランク進捗表示 */
+.rank-progress {
+    grid-column: 1 / -1;
+    margin: -0.5rem 0 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #3567e8;
+}
+
 /* ボタン共通 */
 button {
     padding: 0.7rem 1.5rem;

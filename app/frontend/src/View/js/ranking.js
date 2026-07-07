@@ -9,6 +9,10 @@
         5: { cls: 'tier-diamond',  img: 'diamond.png',  label: 'DIAMOND' },
     };
 
+    // 自分のリーグ・現在のrank（初回のランキング取得時に設定される）
+    let myLeague = null;
+    let myRank = null;
+
     document.addEventListener('DOMContentLoaded', () => {
         const countdownEl = document.getElementById('countdown-text');
         updateCountdown(countdownEl);
@@ -33,14 +37,43 @@
             });
         }
 
+        document.querySelectorAll('.rank-tab').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const rank = Number(btn.dataset.rank);
+                setActiveTab(rank);
+                loadRankTable(rank);
+            });
+        });
+
         renderRanking();
     });
 
-    async function renderRanking() {
-        const tbody = document.getElementById('ranking-tbody');
-        const userRankEl = document.getElementById('user-rank-value');
-        const rankImg = document.querySelector('.user-rank-top-img');
+    function setActiveTab(rank) {
+        document.querySelectorAll('.rank-tab').forEach((btn) => {
+            btn.classList.toggle('active', Number(btn.dataset.rank) === rank);
+        });
+    }
 
+    // 「あなたのランク: ◯◯◯」の文字表示は常に自分の実際のrankを示す（タブでは変わらない）
+    function updateMyRankText(rank) {
+        const userRankEl = document.getElementById('user-rank-value');
+        if (!userRankEl) return;
+        const info = RANK_INFO[rank] || { cls: 'tier-bronze', img: 'bronze.png', label: '---' };
+        Object.values(RANK_INFO).forEach((v) => userRankEl.classList.remove(v.cls));
+        userRankEl.textContent = info.label;
+        userRankEl.classList.add(info.cls);
+    }
+
+    // バッジ画像は今見ているランキングのrankに合わせて変わる
+    function updateRankImage(rank) {
+        const rankImg = document.querySelector('.user-rank-top-img');
+        if (!rankImg) return;
+        const info = RANK_INFO[rank] || { cls: 'tier-bronze', img: 'bronze.png', label: '---' };
+        rankImg.src = `../../../../../public/${info.img}`;
+        rankImg.alt = info.label;
+    }
+
+    async function renderRanking() {
         const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
         const currentUserId = storedUser && storedUser.id ? storedUser.id : null;
 
@@ -55,21 +88,10 @@
             console.error('ランキング取得に失敗しました', e);
         }
 
-        // 自分のエントリから rank（1〜5）を取得して画像・バッジを更新
+        // 自分のエントリから league・rank（1〜5）を取得しておく
         const myEntry = data.find((item) => Number(item.userId) === Number(currentUserId));
-        const myRank = myEntry ? myEntry.rank : null;
-        const info = RANK_INFO[myRank] || { cls: 'tier-bronze', img: 'bronze.png', label: '---' };
-
-        if (userRankEl) {
-            Object.values(RANK_INFO).forEach((v) => userRankEl.classList.remove(v.cls));
-            userRankEl.textContent = info.label;
-            userRankEl.classList.add(info.cls);
-        }
-
-        if (rankImg) {
-            rankImg.src = `../../../../../public/${info.img}`;
-            rankImg.alt = info.label;
-        }
+        myLeague = myEntry ? myEntry.league : null;
+        myRank = myEntry ? myEntry.rank : null;
 
         // 上位3名のサマリーカード
         const topClasses = ['gold', 'silver', 'bronze'];
@@ -88,12 +110,59 @@
             }
         }
 
-        // ランキングテーブル
+        // タブは自分のrankを初期選択にして、まず自分のランキングを描画
+        setActiveTab(myRank);
+        updateMyRankText(myRank);
+        updateRankImage(myRank);
+        renderTable(data, currentUserId);
+    }
+
+    // 他のrankのボタンが押された時に、そのrankのランキングを取得して表示する
+    async function loadRankTable(rank) {
+        const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+        const currentUserId = storedUser && storedUser.id ? storedUser.id : null;
+
+        let data = [];
+        try {
+            const params = new URLSearchParams({ rank: String(rank) });
+            if (myLeague) params.set('league', myLeague);
+            const res = await fetch(`${RANKING_API_BASE}?${params.toString()}`);
+            if (!res.ok) throw new Error('API error');
+            data = await res.json();
+        } catch (e) {
+            console.error('ランキング取得に失敗しました', e);
+        }
+
+        updateRankImage(rank);
+        renderTable(data, currentUserId);
+    }
+
+    // ランキングテーブルの描画（自分のrank／他のrankどちらでも共通で使う）
+    function renderTable(data, currentUserId) {
+        const tbody = document.getElementById('ranking-tbody');
         if (!tbody) return;
         tbody.innerHTML = '';
+
         const n = data.length;
         const topCount = Math.ceil(n * 0.25);
         const bottomStart = Math.max(topCount, n - Math.ceil(n * 0.25));
+
+        // このテーブルは「同じリーグ・同じrank」のユーザーのみで構成されているため、
+        // 全行が同じrank値を持つ。rank=5は昇格しても頭打ち、rank=1は降格しても底打ちで
+        // 実際には何も起きないため、その場合は昇格圏・降格圏の色を付けない。
+        const cohortRank = n > 0 ? Number(data[0].rank) : null;
+        const promotionIsNoOp = cohortRank !== null && cohortRank >= 5;
+        const demotionIsNoOp = cohortRank !== null && cohortRank <= 1;
+
+        if (n === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 3;
+            td.textContent = 'データがありません';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
 
         data.forEach((item, idx) => {
             const tr = document.createElement('tr');
@@ -105,8 +174,8 @@
             const pointsTd = document.createElement('td');
             pointsTd.textContent = item.weeklyMinutes;
 
-            if (idx < topCount) tr.classList.add('top-zone');
-            else if (idx >= bottomStart) tr.classList.add('bottom-zone');
+            if (!promotionIsNoOp && idx < topCount) tr.classList.add('top-zone');
+            else if (!demotionIsNoOp && idx >= bottomStart) tr.classList.add('bottom-zone');
 
             if (Number(item.userId) === Number(currentUserId)) {
                 tr.classList.add('highlight-row');

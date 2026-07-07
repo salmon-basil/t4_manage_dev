@@ -48,7 +48,7 @@ module.exports = (db) => {
                 FROM Rank r
                 JOIN User u ON u.id = r.userId
                 WHERE r.league = ? AND r.rank = ?
-                ORDER BY r.weeklyMinutes DESC
+                ORDER BY r.weeklyMinutes DESC, RANDOM()
                 LIMIT 1000
             `);
             return stmt.all(league, rank);
@@ -93,6 +93,21 @@ module.exports = (db) => {
                 `,
                 )
                 .all(league);
+        },
+
+        getUsersByLeagueAndRank: (league, rank) => {
+            // weeklyMinutesが同点の場合は毎回ランダムな順序にし、
+            // 特定の誰か（登録が早い人など）が固定で有利/不利にならないようにする
+            return db
+                .prepare(
+                    `
+                    SELECT r.userId, r.weeklyMinutes, r.rank
+                    FROM Rank r
+                    WHERE r.league = ? AND r.rank = ?
+                    ORDER BY r.weeklyMinutes DESC, RANDOM()
+                `,
+                )
+                .all(league, rank);
         },
 
         batchUpdateRanks: (updates) => {

@@ -39,7 +39,7 @@
 
                     <div class="info-box">
                         <p class="title">ランク</p>
-                        <p class="value">ー</p>
+                        <p id="profile-rank" class="value">ー</p>
                     </div>
                 </div>
 
@@ -57,6 +57,14 @@
 
         <script>
             const API_BASE = 'http://localhost:3000/api';
+
+            const RANK_LABELS = {
+                1: 'BRONZE',
+                2: 'SILVER',
+                3: 'GOLD',
+                4: 'PLATINUM',
+                5: 'DIAMOND',
+            };
 
             const loadProfileData = async () => {
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -76,11 +84,14 @@
                     document.getElementById('profile-nickname').textContent =
                         profile.nickname || 'ー';
                     document.getElementById('profile-goal').textContent = profile.goal || 'ー';
+                    document.getElementById('profile-rank').textContent =
+                        RANK_LABELS[profile.rank] || 'ー';
                 } catch (error) {
                     console.error(error);
                     document.getElementById('profile-username').textContent = user.username || 'ー';
                     document.getElementById('profile-nickname').textContent = 'ー';
                     document.getElementById('profile-goal').textContent = 'ー';
+                    document.getElementById('profile-rank').textContent = 'ー';
                 }
             };
 

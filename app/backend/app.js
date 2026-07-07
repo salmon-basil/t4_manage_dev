@@ -22,6 +22,7 @@ const studyService = require("./services/studyService")(studyRepository, ranking
 const profileService = require("./services/profileService")(
     profileRepository,
     userRepository,
+    rankingRepository,
 );
 
 // Routes（依存注入）

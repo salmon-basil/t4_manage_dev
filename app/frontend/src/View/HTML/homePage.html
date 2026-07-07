@@ -30,12 +30,31 @@
             <a class="back-button" href="./login.html"> ログアウト </a>
         </div>
         <script>
-            const userData = JSON.parse(localStorage.getItem('user'));
-            if (userData) {
-                document.getElementById('username').textContent = userData.username;
-            } else {
-                console.log('ユーザー情報がありません');
-            }
+            const API_BASE = 'http://localhost:3000/api';
+
+            const loadUsername = async () => {
+                const userData = JSON.parse(localStorage.getItem('user') || 'null');
+                if (!userData || !userData.id) {
+                    console.log('ユーザー情報がありません');
+                    return;
+                }
+
+                // まずはキャッシュ値を表示し、サーバーの最新情報で上書きする
+                document.getElementById('username').textContent = userData.username || 'ー';
+
+                try {
+                    const response = await fetch(`${API_BASE}/profile/${userData.id}`);
+                    if (!response.ok) {
+                        throw new Error('ユーザー情報の取得に失敗しました');
+                    }
+                    const profile = await response.json();
+                    document.getElementById('username').textContent = profile.username || 'ー';
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+
+            window.addEventListener('DOMContentLoaded', loadUsername);
         </script>
     </body>
 </html>

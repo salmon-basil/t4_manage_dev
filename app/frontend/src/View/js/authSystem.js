@@ -67,7 +67,7 @@ const handleRegister = async (event) => {
             return showAlert(data.error || '登録に失敗しました。');
         }
 
-        showAlert('登録が完了しました。ログイン画面へ移動します。');
+        showAlert('登録が完了しました。');
         window.location.href = './login.html';
     } catch (error) {
         showAlert('サーバーに接続できませんでした。後でもう一度お試しください。');

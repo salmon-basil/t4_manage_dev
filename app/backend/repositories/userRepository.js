@@ -11,7 +11,7 @@ module.exports = (db) => {
             const insertRankStmt = db.prepare(
                 "INSERT INTO Rank (userId, weeklyMinutes, rank, league) VALUES (?, ?, ?, ?)",
             );
-            insertRankStmt.run(userId, 0, 1, "else");
+            insertRankStmt.run(userId, 0, 1, "BRONZE");
 
             return { id: userId, username };
         },

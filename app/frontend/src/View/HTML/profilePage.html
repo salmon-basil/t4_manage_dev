@@ -38,7 +38,7 @@
 
                     <div class="info-box">
                         <p class="title">総勉強時間</p>
-                        <p class="value">ー</p>
+                        <p id="profile-study-time" class="value">ー</p>
                     </div>
                 </div>
 
@@ -97,6 +97,20 @@
                     fallback.textContent = 'ー';
                 }
                 applyRankTheme(rank);
+            };
+
+            const formatStudyMinutes = (minutes) => {
+                const totalMinutes = Number(minutes) || 0;
+                const hours = Math.floor(totalMinutes / 60);
+                const mins = totalMinutes % 60;
+
+                if (hours > 0 && mins > 0) {
+                    return `${hours}時間${mins}分`;
+                }
+                if (hours > 0) {
+                    return `${hours}時間`;
+                }
+                return `${mins}分`;
             };
 
             // URLに ?userId=... があればそのユーザー、なければ自分のプロフィールを表示する
@@ -176,6 +190,14 @@
                     const history = await response.json();
                     const historyList = document.querySelector('.history-list');
                     const historyChart = document.querySelector('.history-chart');
+                    const studyTimeElement = document.getElementById('profile-study-time');
+                    const totalMinutes = Array.isArray(history)
+                        ? history.reduce((sum, record) => sum + Number(record.studyMinutes || 0), 0)
+                        : 0;
+
+                    if (studyTimeElement) {
+                        studyTimeElement.textContent = formatStudyMinutes(totalMinutes);
+                    }
 
                     if (history.length === 0) {
                         historyList.innerHTML = '<p class="no-data">データがありません</p>';
@@ -215,6 +237,10 @@
                         .join('');
                 } catch (error) {
                     console.error(error);
+                    const studyTimeElement = document.getElementById('profile-study-time');
+                    if (studyTimeElement) {
+                        studyTimeElement.textContent = 'ー';
+                    }
                 }
             };
 

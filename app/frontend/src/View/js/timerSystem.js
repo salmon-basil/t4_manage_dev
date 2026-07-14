@@ -161,7 +161,12 @@ document.getElementById('reset').onclick = () => {
 };
 
 // ===== 登録ボタンのイベントハンドラー =====
-document.getElementById('send').onclick = sendStudyTime;
+// type="submit"のためクリックすると素のフォーム送信（ページリロード）も発生してしまう。
+// それを防ぐためform自体のsubmitイベントでpreventDefaultする。
+document.getElementById('studyForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    sendStudyTime();
+});
 
 // ===== 初期化：ページ読み込み時に日付時刻を表示 =====
 window.addEventListener('DOMContentLoaded', () => {

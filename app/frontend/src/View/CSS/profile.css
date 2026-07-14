@@ -6,9 +6,28 @@ body {
     min-height: 100vh;
     background-color: #dfe7f7;
     font-family: sans-serif;
+    transition: background-color 0.4s ease;
+}
+
+/* 表示中プロフィールのランクに合わせた背景色（ランキング画面と同系統の配色） */
+body.rank-theme-1 {
+    background-color: #fce3c8;
+}
+body.rank-theme-2 {
+    background-color: #dde3ec;
+}
+body.rank-theme-3 {
+    background-color: #fdedb8;
+}
+body.rank-theme-4 {
+    background-color: #d9e6fb;
+}
+body.rank-theme-5 {
+    background-color: #bdf1ff;
 }
 
 .profile {
+    position: relative;
     width: 900px;
     background-color: white;
     padding: 40px;
@@ -24,6 +43,7 @@ body {
 .profile-container {
     display: flex;
     gap: 40px;
+    margin-top: 130px;
     margin-bottom: 20px;
 }
 
@@ -51,6 +71,26 @@ body {
     margin-bottom: 0;
     font-size: 20px;
     font-weight: bold;
+}
+
+.rank-badge-corner {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    text-align: center;
+}
+
+.rank-badge-img {
+    display: block;
+    width: 160px;
+    height: auto;
+}
+
+.rank-badge-fallback {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #666;
 }
 
 .study-history {
@@ -113,9 +153,16 @@ body {
     margin-bottom: 6px;
 }
 
+.bar-track {
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: flex-end;
+}
+
 .bar-fill {
     width: 100%;
-    min-height: 16px;
+    min-height: 4px;
     border-radius: 10px 10px 0 0;
     background: linear-gradient(180deg, #5e8cff 0%, #2c5cd7 100%);
     transition: height 0.3s ease;

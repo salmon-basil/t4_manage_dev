@@ -77,6 +77,15 @@
         renderRanking();
     });
 
+    // ユーザー名をタップするとそのユーザーのプロフィール画面に遷移するリンクを作る
+    function createUserLink(item) {
+        const link = document.createElement('a');
+        link.href = `./profilePage.html?userId=${encodeURIComponent(item.userId)}`;
+        link.textContent = item.username;
+        link.className = 'ranking-user-link';
+        return link;
+    }
+
     function setActiveTab(rank) {
         document.querySelectorAll('.rank-tab').forEach((btn) => {
             btn.classList.toggle('active', Number(btn.dataset.rank) === rank);
@@ -143,7 +152,10 @@
             const pointsEl = card.querySelector('.top-points');
             const item = data[i];
             if (item) {
-                if (nameEl) nameEl.textContent = item.username;
+                if (nameEl) {
+                    nameEl.innerHTML = '';
+                    nameEl.appendChild(createUserLink(item));
+                }
                 if (pointsEl) pointsEl.textContent = item.weeklyMinutes + 'pt';
             } else {
                 if (nameEl) nameEl.textContent = 'ー';
@@ -213,7 +225,7 @@
             const rankTd = document.createElement('td');
             rankTd.textContent = `${idx + 1}位`;
             const nameTd = document.createElement('td');
-            nameTd.textContent = item.username;
+            nameTd.appendChild(createUserLink(item));
             const pointsTd = document.createElement('td');
             pointsTd.textContent = item.weeklyMinutes;
 

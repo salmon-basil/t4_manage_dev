@@ -13,8 +13,10 @@ module.exports = (db) => {
             return db
                 .prepare(
                     `
-                    SELECT studyDate, studyMinutes FROM StudyRecord
+                    SELECT studyDate, SUM(studyMinutes) AS studyMinutes
+                    FROM StudyRecord
                     WHERE userId = ?
+                    GROUP BY studyDate
                     ORDER BY studyDate DESC
                 `,
                 )

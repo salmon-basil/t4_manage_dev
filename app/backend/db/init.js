@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS StudyRecord (
 );
 `);
 
+
 // rank値が旧形式(3〜7)の場合、新形式(1〜5)に移行する
 const migrateRanks = () => {
     const hasOldRanks = db

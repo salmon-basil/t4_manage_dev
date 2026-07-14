@@ -13,11 +13,15 @@
 
     <body>
         <div class="profile">
-            <h1>プロフィール</h1>
+            <div class="rank-badge-corner">
+                <img id="profile-rank-img" class="rank-badge-img" src="" alt="ー" hidden />
+                <p id="profile-rank-fallback" class="rank-badge-fallback">ー</p>
+            </div>
+            <h1 id="profile-title">プロフィール</h1>
             <a class="edit-button" href="./profileedit.html">プロフィールを編集</a>
             <div class="profile-container">
                 <div class="profile-info">
-                    <div class="info-box">
+                    <div class="info-box" id="username-box">
                         <p class="title">ユーザー名</p>
                         <p id="profile-username" class="value">ー</p>
                     </div>
@@ -35,11 +39,6 @@
                     <div class="info-box">
                         <p class="title">総勉強時間</p>
                         <p class="value">ー</p>
-                    </div>
-
-                    <div class="info-box">
-                        <p class="title">ランク</p>
-                        <p id="profile-rank" class="value">ー</p>
                     </div>
                 </div>
 
@@ -66,14 +65,80 @@
                 5: 'DIAMOND',
             };
 
-            const loadProfileData = async () => {
+            const RANK_IMAGES = {
+                1: 'bronze.png',
+                2: 'silver.png',
+                3: 'gold.png',
+                4: 'platinum.png',
+                5: 'diamond.png',
+            };
+
+            const RANK_THEME_CLASSES = [1, 2, 3, 4, 5].map((r) => `rank-theme-${r}`);
+
+            const applyRankTheme = (rank) => {
+                document.body.classList.remove(...RANK_THEME_CLASSES);
+                if (RANK_IMAGES[rank]) {
+                    document.body.classList.add(`rank-theme-${rank}`);
+                }
+            };
+
+            const setRankBadge = (rank) => {
+                const img = document.getElementById('profile-rank-img');
+                const fallback = document.getElementById('profile-rank-fallback');
+                const file = RANK_IMAGES[rank];
+                if (file) {
+                    img.src = `../../../../../public/${file}`;
+                    img.alt = RANK_LABELS[rank] || 'ランク';
+                    img.hidden = false;
+                    fallback.hidden = true;
+                } else {
+                    img.hidden = true;
+                    fallback.hidden = false;
+                    fallback.textContent = 'ー';
+                }
+                applyRankTheme(rank);
+            };
+
+            // URLに ?userId=... があればそのユーザー、なければ自分のプロフィールを表示する
+            const getViewUserId = () => {
+                const params = new URLSearchParams(window.location.search);
+                const paramUserId = params.get('userId');
+                if (paramUserId) {
+                    return paramUserId;
+                }
                 const user = JSON.parse(localStorage.getItem('user') || '{}');
-                if (!user || !user.id) {
+                return user && user.id ? user.id : null;
+            };
+
+            // 表示対象が自分自身のプロフィールかどうかを判定する
+            const isOwnProfile = (viewUserId) => {
+                const loggedInUser = JSON.parse(localStorage.getItem('user') || '{}');
+                return loggedInUser && loggedInUser.id
+                    ? String(loggedInUser.id) === String(viewUserId)
+                    : false;
+            };
+
+            // 他人のプロフィールを見ているときは編集リンクを隠す
+            const applyEditVisibility = (viewUserId) => {
+                const editButton = document.querySelector('.edit-button');
+                if (!editButton) return;
+                editButton.style.display = isOwnProfile(viewUserId) ? '' : 'none';
+            };
+
+            // 他人のプロフィールでは見出しに既にユーザー名が出るので、二重表示を避けるため隠す
+            const applyUsernameBoxVisibility = (viewUserId) => {
+                const usernameBox = document.getElementById('username-box');
+                if (!usernameBox) return;
+                usernameBox.style.display = isOwnProfile(viewUserId) ? '' : 'none';
+            };
+
+            const loadProfileData = async (viewUserId) => {
+                if (!viewUserId) {
                     return;
                 }
 
                 try {
-                    const response = await fetch(`${API_BASE}/profile/${user.id}`);
+                    const response = await fetch(`${API_BASE}/profile/${viewUserId}`);
                     if (!response.ok) {
                         throw new Error('プロフィールの取得に失敗しました');
                     }
@@ -84,25 +149,26 @@
                     document.getElementById('profile-nickname').textContent =
                         profile.nickname || 'ー';
                     document.getElementById('profile-goal').textContent = profile.goal || 'ー';
-                    document.getElementById('profile-rank').textContent =
-                        RANK_LABELS[profile.rank] || 'ー';
+                    setRankBadge(profile.rank);
+                    document.getElementById('profile-title').textContent = isOwnProfile(viewUserId)
+                        ? 'プロフィール'
+                        : profile.username || 'プロフィール';
                 } catch (error) {
                     console.error(error);
-                    document.getElementById('profile-username').textContent = user.username || 'ー';
+                    document.getElementById('profile-username').textContent = 'ー';
                     document.getElementById('profile-nickname').textContent = 'ー';
                     document.getElementById('profile-goal').textContent = 'ー';
-                    document.getElementById('profile-rank').textContent = 'ー';
+                    setRankBadge(null);
                 }
             };
 
-            const loadStudyHistory = async () => {
+            const loadStudyHistory = async (viewUserId) => {
                 try {
-                    const user = JSON.parse(localStorage.getItem('user') || '{}');
-                    if (!user || !user.id) {
+                    if (!viewUserId) {
                         return;
                     }
 
-                    const response = await fetch(`${API_BASE}/study-records/${user.id}`);
+                    const response = await fetch(`${API_BASE}/study-records/${viewUserId}`);
                     if (!response.ok) {
                         throw new Error('勉強履歴の取得に失敗しました');
                     }
@@ -139,7 +205,9 @@
                             return `
                                 <div class="chart-bar">
                                     <div class="bar-value">${record.studyMinutes}分</div>
-                                    <div class="bar-fill" style="height: ${height}%;"></div>
+                                    <div class="bar-track">
+                                        <div class="bar-fill" style="height: ${height}%;"></div>
+                                    </div>
                                     <div class="bar-label">${date}</div>
                                 </div>
                             `;
@@ -151,8 +219,11 @@
             };
 
             window.addEventListener('DOMContentLoaded', () => {
-                loadProfileData();
-                loadStudyHistory();
+                const viewUserId = getViewUserId();
+                applyEditVisibility(viewUserId);
+                applyUsernameBoxVisibility(viewUserId);
+                loadProfileData(viewUserId);
+                loadStudyHistory(viewUserId);
             });
         </script>
     </body>
